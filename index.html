@@ -184,7 +184,7 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 
 <section class="next" id="next"><div class="wrap">
   <div class="row rv">
-    <div><div class="tag">Planned</div><h3>A verifier for any narrator</h3><p>The claim-checker from <i>Who did the math?</i> pulled out as a library: give it an answer and the statistics it was supposed to use, get back every number colored by whether it holds.</p></div>
+    <div><div class="tag">Planned</div><h3>A verifier for any narrator</h3><p>The number-checker from <i>Who did the math?</i> pulled out as a library: give it an answer and the statistics it was supposed to use, get back every number coloured by whether it matches.</p></div>
     <div><div class="tag">Planned</div><h3>Timeline-first synthetic panels</h3><p>The generator, generalized: customers as lives rather than rows, so that causal questions have real answers to test against.</p></div>
   </div>
 </div></section>
@@ -263,7 +263,7 @@ const truth=[];(function fl(o,p){for(const [k,v] of Object.entries(o)){if(typeof
 const EXT=/\b(typically|generally|national(?:ly)? (?:average|rate|figure)|industry (?:average|benchmark)|research shows|according to (?!the (?:data|statistics)))\b/gi;
 function vcheck(){const t=document.getElementById('vtext').value;const re=/(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)(\s?%|\s?(?:percent|points?|pts))?/g;let out='',pos=0,m,nv=0,nd=0,nu=0;const marks=[];
   while((m=re.exec(t))){const v=parseFloat(m[1].replace(/,/g,''));const kind=m[2]?(/point|pts/.test(m[2])?'pts':'pct'):'count';if(kind==='count'&&(v<=12||(v>=1980&&v<=2035)))continue;const dec=(m[1].split('.')[1]||'').length;const tol=(tv)=>kind==='count'?Math.max(.5,.005*tv):Math.max(.5*Math.pow(10,-dec),.015*tv);
-    let st='bad',why='not in the statistics';const cand=truth.filter(x=>kind==='count'?x.kind==='count':x.kind==='pct');
+    let st='bad',why='no match in the statistics';const cand=truth.filter(x=>kind==='count'?x.kind==='count':x.kind==='pct');
     const hit=cand.find(x=>Math.abs(x.v-v)<=tol(x.v));if(hit){st='ok';why=hit.p+' = '+hit.v;nv++;}
     else{outer:for(const a of cand)for(const b of cand){if(a===b)continue;const d=Math.abs(a.v-b.v);if(d>0&&Math.abs(d-v)<=tol(d)){st='der';why=`|${a.p} − ${b.p}| = ${+d.toFixed(2)}`;nd++;break outer;}}
       if(st==='bad'&&kind!=='count'){const cs=truth.filter(x=>x.kind==='count');outer2:for(const a of cs)for(const b of cs){if(a===b||a.v>b.v)continue;const pv=a.v/b.v*100;if(Math.abs(pv-v)<=tol(pv)){st='der';why=`${a.p} / ${b.p} = ${pv.toFixed(1)}%`;nd++;break outer2;}}}
@@ -272,7 +272,7 @@ function vcheck(){const t=document.getElementById('vtext').value;const re=/(\d{1
   let ex;const ext=[];EXT.lastIndex=0;while((ex=EXT.exec(t)))ext.push({s:ex.index,e:ex.index+ex[0].length});
   const all=[...marks.map(x=>({...x,tag:'mark'})),...ext.map(x=>({...x,tag:'u',st:'',why:'external knowledge'}))].sort((a,b)=>a.s-b.s);
   const esc=x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;');for(const k of all){if(k.s<pos)continue;out+=esc(t.slice(pos,k.s))+`<${k.tag} class="${k.st}" title="${esc(k.why)}">${esc(t.slice(k.s,k.e))}</${k.tag}>`;pos=k.e;}out+=esc(t.slice(pos));
-  document.getElementById('vout').innerHTML=out;document.getElementById('vsum').textContent=`${nv} verified · ${nd} derived · ${nu} unverified · ${ext.length} external-knowledge phrase${ext.length===1?'':'s'}. Hover a number to see what it matched.`;}
+  document.getElementById('vout').innerHTML=out;document.getElementById('vsum').textContent=`${nv} match the statistics · ${nd} computed from them · ${nu} with no match · ${ext.length} phrase${ext.length===1?'':'s'} from outside the data. Hover a number to see what it matched.`;}
 document.getElementById('vtext').addEventListener('input',vcheck);vcheck();
 if(innerWidth<=820) document.getElementById('vdet').removeAttribute('open');
 

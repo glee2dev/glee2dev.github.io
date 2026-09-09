@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hero A5 — edge to edge</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#0A0E17}
+.hero{position:relative;overflow:hidden;height:100vh;min-height:640px;max-height:820px;display:flex;align-items:flex-end;background:#0A0E17;color:#E6EDF3}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .wrap{position:relative;z-index:2;padding:0 clamp(18px,4vw,44px) 56px;max-width:1080px;margin:0 auto;width:100%}
+.hero h1{font-size:clamp(40px,7.2vw,96px);font-weight:600;letter-spacing:-.035em;line-height:.95;margin:0}
+.hero .kr{font-size:17px;margin:14px 0 0;letter-spacing:.02em;opacity:.65}
+.hero .lede{font-size:clamp(19px,2.2vw,26px);max-width:30ch;margin:30px 0 0;line-height:1.3} .hero .lede b{font-weight:600;color:#BFE9FF}
+</style></head><body>
+<section class="hero">
+<svg id="v" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs>
+<linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#7DD3FC" stop-opacity=".5"/><stop offset=".1" stop-color="#7DD3FC"/><stop offset=".5" stop-color="#DDF6FF"/><stop offset=".85" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".5"/></linearGradient>
+<filter id="soft" x="-20%" y="-80%" width="140%" height="260%"><feGaussianBlur stdDeviation="16"/></filter>
+<filter id="glow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g id="form" transform="translate(0,-150)">
+  <g id="strokes" fill="none" stroke="#9BC5DD" stroke-width="1.2" stroke-linecap="round"></g>
+  <path id="halo" fill="none" stroke="#7DD3FC" stroke-width="14" stroke-opacity=".28" stroke-linecap="round" filter="url(#soft)"/>
+  <path id="line" fill="none" stroke="url(#lg)" stroke-width="3.6" stroke-linecap="round" filter="url(#glow)"/>
+  <path id="core" fill="none" stroke="#fff" stroke-width="1.2" stroke-opacity=".9" stroke-linecap="round"/>
+</g>
+</svg>
+<div class="wrap"><h1>Gyunpyo Lee</h1><p class="kr">이건표 · Seoul · data scientist and AI engineer, trained as a car designer</p><p class="lede">I design AI products and <b>measure whether they work</b>.</p></div>
+</section>
+<script>
+const NS='http://www.w3.org/2000/svg', $=id=>document.getElementById(id);
+// the line: a short nose drop, hood rising to the cowl, fast screen, a long low greenhouse peaking over the front seats,
+// long deck falling over the haunch, and a kamm drop at the tail. Starts and ends with intent; nothing underneath.
+const TOP=[
+  -320,478,                           // enters from beyond the left edge, at hood height
+  -120,476,120,470,320,462,           // lead-in, a slow rise
+  420,456,470,452,516,446,            // hood to cowl
+  610,432,690,354,760,342,            // screen, eased into the roof
+  820,334,900,334,1000,346,           // long low roof
+  1170,366,1300,404,1400,446,         // deck over the haunch
+  1520,482,1700,504,1960,512];        // runs out beyond the right edge
+const toD=v=>{let d=`M ${v[0]} ${v[1]}`;for(let i=2;i<v.length;i+=6)d+=` C ${v.slice(i,i+6).join(' ')}`;return d;};
+const CX=814, CY=430; let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647-.5;
+
+const N=14, strokes=[], g=$('strokes');
+for(let k=0;k<N;k++){
+  const ang=rnd()*0.7, sc=1+rnd()*0.4, dx=rnd()*400, dy=rnd()*360, bend=rnd()*320, c=Math.cos(ang), s=Math.sin(ang), start=[];
+  for(let i=0;i<TOP.length;i+=2){ let x=TOP[i]-CX, y=TOP[i+1]-CY; y+=bend*Math.sin((x/1700)*Math.PI); start.push((x*c-y*s)*sc+CX+dx+rnd()*14,(x*s+y*c)*sc+CY+dy+rnd()*14); }
+  const p=document.createElementNS(NS,'path'); p.setAttribute('d',toD(start)); p.setAttribute('stroke-opacity','0'); p.setAttribute('pathLength','1'); p.setAttribute('stroke-dasharray','1'); p.setAttribute('stroke-dashoffset','1');
+  g.appendChild(p); strokes.push({p,start,delay:k*100,dur:2200+rnd()*500});
+}
+const D=toD(TOP); for(const id of ['halo','line','core']){ const e=$(id); e.setAttribute('d',D); e.style.opacity=0; }
+
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce){ g.remove(); for(const id of ['halo','line','core']) $(id).style.opacity=1; }
+else{
+  const ease=t=>1-Math.pow(1-t,3), T0=performance.now()+300, MSTART=1300;
+  strokes.forEach(({p,delay})=>{ p.style.transition='stroke-dashoffset 1.2s ease-out, stroke-opacity .5s ease'; setTimeout(()=>{p.style.strokeDashoffset=0;p.setAttribute('stroke-opacity','.30');},delay); });
+  function frame(now){
+    const t=now-T0; let done=true;
+    for(const st of strokes){
+      let u=(t-MSTART-st.delay)/st.dur; if(u<0){done=false;continue;} if(u>1)u=1; else done=false;
+      const e=ease(u), v=new Array(TOP.length); for(let i=0;i<TOP.length;i++) v[i]=st.start[i]+(TOP[i]-st.start[i])*e;
+      st.p.setAttribute('d',toD(v)); st.p.setAttribute('stroke-opacity',(0.30+0.5*e).toFixed(3));
+    }
+    const lu=Math.max(0,Math.min(1,(t-MSTART-2100)/1500));                        // the refined line arrives as they agree
+    for(const id of ['halo','line','core']) $(id).style.opacity=lu;
+    if(lu>0) strokes.forEach(st=>st.p.setAttribute('stroke-opacity',(0.8*(1-lu)).toFixed(3)));   // and the strokes are gone
+    if(!done||lu<1) requestAnimationFrame(frame); else g.remove();
+  }
+  requestAnimationFrame(frame);
+  const lg=$('lg'); addEventListener('pointermove',e=>{lg.setAttribute('gradientTransform',`translate(${((e.clientX/innerWidth-.5)*.7).toFixed(3)} 0)`);},{passive:true});
+}
+</script></body></html>

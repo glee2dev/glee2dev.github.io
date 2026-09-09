@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Gyunpyo Lee","alternateName":["이건표","Gun Lee"],"url":"https://gyunpyolee.com","jobTitle":"Senior Data Scientist and AI Engineer","sameAs":["https://github.com/glee2dev"]}</script>
 <style>
-:root{--bg:#F3F4F1;--ink:#1C2024;--muted:#6F767D;--rule:#D6D9D4;--dark:#0E1012;--dark2:#15181B;--on-dark:#ECEDEA;--on-dark-muted:#8B9197;--light:#FF6A3D;--light2:#FFD2A8;--ok:#1E7A4C;--der:#2E5AAC;--bad:#B4271F;--prose:66ch}
+:root{--bg:#F3F4F1;--ink:#1C2024;--muted:#6F767D;--rule:#D6D9D4;--dark:#0A0E17;--dark2:#0E1320;--on-dark:#E6EDF3;--on-dark-muted:#8B95A3;--light:#7DD3FC;--light2:#DDF6FF;--ok:#1E7A4C;--der:#2E5AAC;--bad:#B4271F;--prose:66ch}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -24,13 +24,13 @@ a{color:inherit;text-decoration:none}
 .hero h1{font-size:clamp(40px,7.2vw,96px);font-weight:600;letter-spacing:-.035em;line-height:.95;margin:0}
 .hero .kr{font-size:clamp(15px,1.5vw,18px);color:var(--on-dark-muted);margin:14px 0 0;letter-spacing:.02em}
 .hero .lede{font-size:clamp(19px,2.2vw,26px);max-width:30ch;margin:34px 0 0;line-height:1.3;font-weight:400}
-.hero .lede b{font-weight:600;color:#fff}
+.hero .lede b{font-weight:600;color:#BFE9FF}
 .hero .top{position:absolute;left:0;right:0;top:0;padding:22px clamp(18px,4vw,44px);display:flex;justify-content:space-between;font-size:14px;color:var(--on-dark-muted);z-index:3}
 .hero .top a{margin-left:22px} .hero .top a:hover{color:#fff}
 @media (max-width:640px){.hero{min-height:82vh}}
 
 /* ── principles ────────────────────────────────────────────────────────── */
-.principles{background:var(--dark2);color:var(--on-dark);padding:34px 0 40px;border-top:1px solid #23272B}
+.principles{background:var(--dark2);color:var(--on-dark);padding:34px 0 40px;border-top:1px solid #182033}
 .principles .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
 .principles .p{position:relative;padding-top:18px}
 .principles .p::before{content:"";position:absolute;left:0;top:0;height:2px;width:44px;background:var(--light);transform-origin:left;transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -49,13 +49,13 @@ p{max-width:var(--prose)}
 .card.first{border-top:2px solid var(--ink)}
 .card .when{font-size:14px;color:var(--muted);margin:0 0 8px;letter-spacing:.04em}
 .card h3{margin:0 0 10px;font-size:clamp(24px,2.6vw,32px);font-weight:600;letter-spacing:-.02em;line-height:1.12}
-.card h3 a{border-bottom:2px solid transparent;transition:border-color .2s} .card h3 a:hover{border-color:var(--light)}
+.card h3 a{border-bottom:2px solid transparent;transition:border-color .2s} .card h3 a:hover{border-color:var(--der)}
 .card p{margin:0 0 14px}
 .card .meta{font-size:15px;display:flex;flex-wrap:wrap;gap:8px 22px} .card .meta a{border-bottom:1px solid var(--rule)} .card .meta a:hover{border-color:var(--ink)}
 .card .meta .soon{color:var(--muted)}
 .card figure{margin:0;border:1px solid var(--rule);background:#fff;padding:18px 20px}
 .card figure svg{width:100%;height:auto;display:block}
-.propctl{display:flex;gap:14px;align-items:center;margin-top:10px;font-size:14px;color:var(--muted)} .propctl input{flex:1;accent-color:var(--light)} .propctl span{min-width:15ch;font-variant-numeric:tabular-nums}
+.propctl{display:flex;gap:14px;align-items:center;margin-top:10px;font-size:14px;color:var(--muted)} .propctl input{flex:1;accent-color:var(--der)} .propctl span{min-width:15ch;font-variant-numeric:tabular-nums}
 .bars{display:grid;gap:12px}
 .bar{display:grid;grid-template-columns:120px 1fr 58px;align-items:center;gap:12px;font-size:14px}
 .bar .track{height:14px;background:#EEF0EC;position:relative} .bar .fill{position:absolute;inset:0 auto 0 0;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
@@ -65,7 +65,7 @@ p{max-width:var(--prose)}
 @media (max-width:820px){.card{grid-template-columns:1fr;gap:22px}}
 
 .vgrid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start}
-.vgrid textarea{width:100%;font:inherit;font-size:16px;line-height:1.5;padding:12px 14px;border:1px solid var(--rule);background:#fff;resize:vertical;color:var(--ink)} .vgrid textarea:focus{outline:2px solid var(--light);outline-offset:2px;border-color:transparent}
+.vgrid textarea{width:100%;font:inherit;font-size:16px;line-height:1.5;padding:12px 14px;border:1px solid var(--rule);background:#fff;resize:vertical;color:var(--ink)} .vgrid textarea:focus{outline:2px solid var(--der);outline-offset:2px;border-color:transparent}
 .vout{margin-top:12px;font-size:16px;line-height:1.6;min-height:3.2em} .vsum{font-size:14px;color:var(--muted);margin-top:8px}
 .vout mark{padding:0 .18em;border-radius:3px;font-weight:600} .vout mark.ok{background:#DDF0E4;color:var(--ok)} .vout mark.der{background:#DCE5F5;color:var(--der)} .vout mark.bad{background:#F6DCD9;color:var(--bad)} .vout u{text-decoration:none;background:#F5EBD0;color:#8A5A00;padding:0 .15em;border-radius:3px}
 .vstats{margin:0;font-size:12.5px;line-height:1.5;background:#fff;border:1px solid var(--rule);padding:12px 14px;white-space:pre-wrap;color:var(--muted)}
@@ -73,7 +73,7 @@ p{max-width:var(--prose)}
 .next{padding:48px 0 0}
 .next .row{display:grid;grid-template-columns:1fr 1fr;gap:28px;border-top:1px solid var(--rule);padding-top:26px}
 .next h3{margin:0 0 6px;font-size:20px;font-weight:600;color:var(--ink)} .next p{margin:0;color:var(--muted);font-size:16px}
-.next .tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--light);margin-bottom:8px}
+.next .tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--der);margin-bottom:8px}
 @media (max-width:760px){.next .row{grid-template-columns:1fr}}
 
 .elsewhere{padding:64px 0 48px}
@@ -83,7 +83,7 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 /* reveal */
 .rv{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease} .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none} .principles .p::before{transform:scaleX(1);transition:none} .bar .fill{transition:none;width:var(--w)} html{scroll-behavior:auto}}
-:focus-visible{outline:2px solid var(--light);outline-offset:3px}
+:focus-visible{outline:2px solid var(--der);outline-offset:3px}
 </style>
 </head>
 <body>
@@ -91,32 +91,19 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 <header class="hero" id="top">
   <div class="top"><span>Gyunpyo Lee</span><span><a href="#arguments">Arguments</a><a href="#next">Next</a><a href="https://github.com/glee2dev">GitHub</a></span></div>
   <!-- one continuous light stroke describing a form; drawn on load -->
-  <svg class="form" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="lg" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#FF6A3D" stop-opacity=".2"/><stop offset=".05" stop-color="#FF6A3D"/><stop offset=".5" stop-color="#FFD2A8"/><stop offset=".82" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".25"/></linearGradient>
-      <linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF6A3D" stop-opacity=".34"/><stop offset=".55" stop-color="#FF8C5A" stop-opacity=".10"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-      <filter id="glow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <filter id="glow2" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="28"/></filter>
-      <linearGradient id="fade" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-    </defs>
-    <g id="form" transform="translate(70,-190)">
-      <path id="surface" d="M 240 556 C 340 553 440 546 540 516 C 640 486 705 428 820 388 C 950 344 1090 330 1210 350 C 1300 365 1368 404 1424 462 C 1446 486 1452 508 1440 526 L 1428 596 C 1372 582 1300 575 1200 574 C 900 572 640 584 420 596 Z" fill="url(#sg)" opacity="0"/>
-      <g id="sections" fill="none" stroke="#fff" stroke-opacity=".26" stroke-width="1.1" stroke-linecap="round">
-        <path d="M520 522 C 542 546 548 572 522 592" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-        <path d="M700 430 C 728 480 732 540 702 582" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-        <path d="M880 372 C 912 440 914 520 882 574" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-        <path d="M1060 336 C 1092 410 1092 510 1062 573" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-        <path d="M1240 358 C 1266 424 1266 516 1242 575" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-      </g>
-      <path id="shoulder" d="M 420 596 C 640 584 900 572 1200 574 C 1300 575 1372 582 1428 596" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-      <path id="stroke" d="M 240 556 C 340 553 440 546 540 516 C 640 486 705 428 820 388 C 950 344 1090 330 1210 350 C 1300 365 1368 404 1424 462 C 1446 486 1452 508 1440 526" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round" filter="url(#glow)" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-      <use href="#stroke" filter="url(#glow2)" opacity=".5"/>
-      <g id="points" fill="#fff" opacity="0">
-        <circle cx="520" cy="522" r="3"/><circle cx="700" cy="430" r="3"/><circle cx="880" cy="372" r="3"/><circle cx="1060" cy="336" r="3"/><circle cx="1240" cy="358" r="3"/>
-        <circle cx="522" cy="592" r="2.2" opacity=".6"/><circle cx="702" cy="582" r="2.2" opacity=".6"/><circle cx="882" cy="574" r="2.2" opacity=".6"/><circle cx="1062" cy="573" r="2.2" opacity=".6"/><circle cx="1242" cy="575" r="2.2" opacity=".6"/>
-      </g>
-    </g>
-  </svg>
+  <svg class="form" id="v" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs>
+<linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#7DD3FC" stop-opacity=".5"/><stop offset=".1" stop-color="#7DD3FC"/><stop offset=".5" stop-color="#DDF6FF"/><stop offset=".85" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".5"/></linearGradient>
+<filter id="soft" x="-20%" y="-80%" width="140%" height="260%"><feGaussianBlur stdDeviation="16"/></filter>
+<filter id="glow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g id="form" transform="translate(0,-150)">
+  <g id="strokes" fill="none" stroke="#9BC5DD" stroke-width="1.2" stroke-linecap="round"></g>
+  <path id="halo" fill="none" stroke="#7DD3FC" stroke-width="14" stroke-opacity=".28" stroke-linecap="round" filter="url(#soft)"/>
+  <path id="line" fill="none" stroke="url(#lg)" stroke-width="3.6" stroke-linecap="round" filter="url(#glow)"/>
+  <path id="core" fill="none" stroke="#fff" stroke-width="1.2" stroke-opacity=".9" stroke-linecap="round"/>
+</g>
+</svg>
   <div class="wrap">
     <h1>Gyunpyo Lee</h1>
     <p class="kr">이건표 · Seoul · data scientist and AI engineer, trained as a car designer</p>
@@ -177,7 +164,7 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
         <g fill="#6F767D" font-family="IBM Plex Sans,sans-serif" font-size="11">
           <text x="20" y="92">B · hatch</text><text x="200" y="98">D · sedan</text><text x="20" y="190">J · SUV</text>
         </g>
-        <g stroke="#FF6A3D" stroke-width="1.2" stroke-dasharray="3 3"><line x1="56" y1="80" x2="146" y2="80"/><line x1="242" y1="88" x2="380" y2="88"/><line x1="68" y1="180" x2="246" y2="180"/></g>
+        <g stroke="#2E5AAC" stroke-width="1.2" stroke-dasharray="3 3"><line x1="56" y1="80" x2="146" y2="80"/><line x1="242" y1="88" x2="380" y2="88"/><line x1="68" y1="180" x2="246" y2="180"/></g>
       </svg>
     </figure>
   </article>
@@ -211,27 +198,50 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 </div></section>
 
 <script>
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const s = document.getElementById('stroke'), a = document.getElementById('shoulder'), surf = document.getElementById('surface'),
-      secs = [...document.querySelectorAll('#sections path')], pts = document.getElementById('points');
-if (reduce) { s.style.strokeDashoffset = 0; a.style.strokeDashoffset = 0; surf.style.opacity = 1; secs.forEach(x=>x.style.strokeDashoffset=0); pts.style.opacity = 1; }
-else {
-  s.style.transition = 'stroke-dashoffset 2.2s cubic-bezier(.3,.6,.15,1)';
-  a.style.transition = 'stroke-dashoffset 1.1s ease-out';
-  surf.style.transition = 'opacity 1.4s ease';
-  secs.forEach(x=>x.style.transition='stroke-dashoffset .7s ease-out');
-  pts.style.transition = 'opacity .9s ease';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    s.style.strokeDashoffset = 0;                                   // line
-    setTimeout(()=>{ a.style.strokeDashoffset = 0; }, 1600);
-    setTimeout(()=>{ surf.style.opacity = 1; }, 2300);              // surface
-    secs.forEach((x,i)=>setTimeout(()=>{ x.style.strokeDashoffset = 0; }, 3200 + i*180));   // volume
-    setTimeout(()=>{ pts.style.opacity = 1; }, 4400);               // measurement
-  }));
-  // the light travels along the form with the pointer; the form stays still
-  const lg = document.getElementById('lg');
-  addEventListener('pointermove', e=>{ const t=(e.clientX/innerWidth-.5)*0.7; lg.setAttribute('gradientTransform',`translate(${t.toFixed(3)} 0)`); }, {passive:true});
+const NS='http://www.w3.org/2000/svg', $id=id=>document.getElementById(id);
+// the line: a short nose drop, hood rising to the cowl, fast screen, a long low greenhouse peaking over the front seats,
+// long deck falling over the haunch, and a kamm drop at the tail. Starts and ends with intent; nothing underneath.
+const TOP=[
+  -320,478,                           // enters from beyond the left edge, at hood height
+  -120,476,120,470,320,462,           // lead-in, a slow rise
+  420,456,470,452,516,446,            // hood to cowl
+  610,432,690,354,760,342,            // screen, eased into the roof
+  820,334,900,334,1000,346,           // long low roof
+  1170,366,1300,404,1400,446,         // deck over the haunch
+  1520,482,1700,504,1960,512];        // runs out beyond the right edge
+const toD=v=>{let d=`M ${v[0]} ${v[1]}`;for(let i=2;i<v.length;i+=6)d+=` C ${v.slice(i,i+6).join(' ')}`;return d;};
+const CX=814, CY=430; let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647-.5;
+
+const N=14, strokes=[], g=$id('strokes');
+for(let k=0;k<N;k++){
+  const ang=rnd()*0.7, sc=1+rnd()*0.4, dx=rnd()*400, dy=rnd()*360, bend=rnd()*320, c=Math.cos(ang), s=Math.sin(ang), start=[];
+  for(let i=0;i<TOP.length;i+=2){ let x=TOP[i]-CX, y=TOP[i+1]-CY; y+=bend*Math.sin((x/1700)*Math.PI); start.push((x*c-y*s)*sc+CX+dx+rnd()*14,(x*s+y*c)*sc+CY+dy+rnd()*14); }
+  const p=document.createElementNS(NS,'path'); p.setAttribute('d',toD(start)); p.setAttribute('stroke-opacity','0'); p.setAttribute('pathLength','1'); p.setAttribute('stroke-dasharray','1'); p.setAttribute('stroke-dashoffset','1');
+  g.appendChild(p); strokes.push({p,start,delay:k*100,dur:2200+rnd()*500});
 }
+const D=toD(TOP); for(const id of ['halo','line','core']){ const e=$id(id); e.setAttribute('d',D); e.style.opacity=0; }
+
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce){ g.remove(); for(const id of ['halo','line','core']) $id(id).style.opacity=1; }
+else{
+  const ease=t=>1-Math.pow(1-t,3), T0=performance.now()+300, MSTART=1300;
+  strokes.forEach(({p,delay})=>{ p.style.transition='stroke-dashoffset 1.2s ease-out, stroke-opacity .5s ease'; setTimeout(()=>{p.style.strokeDashoffset=0;p.setAttribute('stroke-opacity','.30');},delay); });
+  function frame(now){
+    const t=now-T0; let done=true;
+    for(const st of strokes){
+      let u=(t-MSTART-st.delay)/st.dur; if(u<0){done=false;continue;} if(u>1)u=1; else done=false;
+      const e=ease(u), v=new Array(TOP.length); for(let i=0;i<TOP.length;i++) v[i]=st.start[i]+(TOP[i]-st.start[i])*e;
+      st.p.setAttribute('d',toD(v)); st.p.setAttribute('stroke-opacity',(0.30+0.5*e).toFixed(3));
+    }
+    const lu=Math.max(0,Math.min(1,(t-MSTART-2100)/1500));                        // the refined line arrives as they agree
+    for(const id of ['halo','line','core']) $id(id).style.opacity=lu;
+    if(lu>0) strokes.forEach(st=>st.p.setAttribute('stroke-opacity',(0.8*(1-lu)).toFixed(3)));   // and the strokes are gone
+    if(!done||lu<1) requestAnimationFrame(frame); else g.remove();
+  }
+  requestAnimationFrame(frame);
+  const lg=$id('lg'); addEventListener('pointermove',e=>{lg.setAttribute('gradientTransform',`translate(${((e.clientX/innerWidth-.5)*.7).toFixed(3)} 0)`);},{passive:true});
+}
+
 // ── proportion: one profile that morphs between segments ────────────────
 const SEG=[{n:'B · city hatch',wb:150,oh:[22,24],h:52,roof:[0.30,0.72],x:20},{n:'D · sedan',wb:196,oh:[36,44],h:46,roof:[0.26,0.66],x:20},{n:'J · full-size SUV',wb:210,oh:[34,40],h:70,roof:[0.22,0.82],x:20}];
 const lerp=(a,b,t)=>a+(b-a)*t;
@@ -240,7 +250,7 @@ function profile(t){const i=Math.min(1,Math.floor(t)),f=t-i,A=SEG[i],B=SEG[Math.
   const x0=34,gy=140,L=o0+wb+o1,x1=x0+L;const wr=(12+h*.04);
   const d=`M${x0} ${gy-10} L${x0+6} ${gy-10-h*.35} C${x0+L*r0*.5} ${gy-h*.75} ${x0+L*r0} ${gy-h} ${x0+L*r0+8} ${gy-h} L${x0+L*r1} ${gy-h} C${x0+L*r1+20} ${gy-h} ${x1-10} ${gy-h*.55} ${x1} ${gy-14}`;
   const ratio=(L/h).toFixed(2);
-  document.getElementById('prop-svg').innerHTML=`<line x1="20" y1="${gy}" x2="500" y2="${gy}" stroke="#D6D9D4"/><path d="${d}" fill="none" stroke="#1C2024" stroke-width="2" stroke-linecap="round"/><circle cx="${x0+o0}" cy="${gy}" r="${wr}" fill="none" stroke="#1C2024" stroke-width="2"/><circle cx="${x0+o0+wb}" cy="${gy}" r="${wr}" fill="none" stroke="#1C2024" stroke-width="2"/><line x1="${x0+o0}" y1="${gy+22}" x2="${x0+o0+wb}" y2="${gy+22}" stroke="#FF6A3D" stroke-width="1.4" stroke-dasharray="3 3"/><text x="${x0+o0+wb/2}" y="${gy+38}" font-size="11" text-anchor="middle" fill="#6F767D">wheelbase ${Math.round(wb*1.35/1.55)} cm</text><text x="${x1+6}" y="${gy-h/2}" font-size="11" fill="#6F767D">L/H ${ratio}</text>`;
+  document.getElementById('prop-svg').innerHTML=`<line x1="20" y1="${gy}" x2="500" y2="${gy}" stroke="#D6D9D4"/><path d="${d}" fill="none" stroke="#1C2024" stroke-width="2" stroke-linecap="round"/><circle cx="${x0+o0}" cy="${gy}" r="${wr}" fill="none" stroke="#1C2024" stroke-width="2"/><circle cx="${x0+o0+wb}" cy="${gy}" r="${wr}" fill="none" stroke="#1C2024" stroke-width="2"/><line x1="${x0+o0}" y1="${gy+22}" x2="${x0+o0+wb}" y2="${gy+22}" stroke="#2E5AAC" stroke-width="1.4" stroke-dasharray="3 3"/><text x="${x0+o0+wb/2}" y="${gy+38}" font-size="11" text-anchor="middle" fill="#6F767D">wheelbase ${Math.round(wb*1.35/1.55)} cm</text><text x="${x1+6}" y="${gy-h/2}" font-size="11" fill="#6F767D">L/H ${ratio}</text>`;
   document.getElementById('prop-label').textContent=(f<.5?A.n:B.n)+(f>.08&&f<.92?' → '+(f<.5?B.n.split(' ')[0]:A.n.split(' ')[0]):'');}
 const prop=document.getElementById('prop'); prop.addEventListener('input',()=>profile(prop.value/100)); profile(0);
 

@@ -280,5 +280,6 @@ if(innerWidth<=820) document.getElementById('vdet').removeAttribute('open');
 const io = new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }), {threshold:.15});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4eaf538478084ce8b6d2966abefdac25"}'></script>
 </body>
 </html>

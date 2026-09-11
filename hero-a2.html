@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hero A2 — wireframe, resolved</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#0A0E17}
+.hero{position:relative;overflow:hidden;height:100vh;min-height:640px;max-height:820px;display:flex;align-items:flex-end;background:#0A0E17;color:#E6EDF3}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .wrap{position:relative;z-index:2;padding:0 clamp(18px,4vw,44px) 56px;max-width:1080px;margin:0 auto;width:100%}
+.hero h1{font-size:clamp(40px,7.2vw,96px);font-weight:600;letter-spacing:-.035em;line-height:.95;margin:0}
+.hero .kr{font-size:17px;margin:14px 0 0;letter-spacing:.02em;opacity:.65}
+.hero .lede{font-size:clamp(19px,2.2vw,26px);max-width:30ch;margin:30px 0 0;line-height:1.3} .hero .lede b{font-weight:600;color:#BFE9FF}
+</style></head><body>
+<section class="hero">
+<svg id="v" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs>
+<linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#7DD3FC" stop-opacity=".3"/><stop offset=".06" stop-color="#7DD3FC"/><stop offset=".5" stop-color="#DDF6FF"/><stop offset=".85" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".35"/></linearGradient>
+<filter id="glow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g id="form" transform="translate(-30,-235)">
+  <g id="sketch" fill="none" stroke="#9BC5DD" stroke-width="1.1" stroke-linecap="round"></g>
+  <g id="mesh" fill="none" stroke="#9BC5DD" stroke-opacity=".28" stroke-width="1" stroke-linecap="round"></g>
+  <path id="line" fill="none" stroke="url(#lg)" stroke-width="2.8" stroke-linecap="round" filter="url(#glow)"/>
+  <g id="nodes" opacity="0"></g>
+</g>
+</svg>
+<div class="wrap"><h1>Gyunpyo Lee</h1><p class="kr">이건표 · Seoul · data scientist and AI engineer, trained as a car designer</p><p class="lede">I design AI products and <b>measure whether they work</b>.</p></div>
+</section>
+<script>
+/* ── geometry: everything is derived from two curves, so sections land exactly ── */
+const NS='http://www.w3.org/2000/svg', $=id=>document.getElementById(id);
+const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+// roofline: mid-engine, cab-forward. low nose, fast screen, peak over the front seats, long tail over the haunch
+const ROOF=[[200,506],[300,500,420,486,520,458],[590,440,650,352,770,338],[830,331,880,334,940,346],[1080,368,1250,398,1360,440],[1410,462,1440,486,1428,508]];
+// belt / shoulder line: rises over the rear wheel into the haunch
+const BELT=[[240,560],[400,556,700,548,980,542],[1100,540,1180,528,1250,512],[1310,500,1380,514,1420,548]];
+const pathD=P=>P.map((s,i)=>i?`C ${s.join(' ')}`:`M ${s.join(' ')}`).join(' ');
+const roofP=el('path',{d:pathD(ROOF)}), beltP=el('path',{d:pathD(BELT)});
+// y on a curve at a given x (curves are monotone in x)
+function yAt(p,x){const L=p.getTotalLength();let lo=0,hi=L;for(let i=0;i<24;i++){const m=(lo+hi)/2;if(p.getPointAtLength(m).x<x)lo=m;else hi=m;}return p.getPointAtLength((lo+hi)/2).y;}
+
+// 1. exploratory strokes: jittered partial copies of the roofline that fade as the real line resolves
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647-.5;
+const sketch=$('sketch');
+for(let k=0;k<7;k++){
+  const J=ROOF.map((s,i)=>s.map((v,j)=>v+rnd()*(i?16:8)*(j%2?1:.6)));
+  const p=el('path',{d:pathD(J),'stroke-opacity':(.12+k*.03).toFixed(2),pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1});
+  sketch.appendChild(p);
+}
+// 2. the resolved line
+const line=$('line'); line.setAttribute('d',pathD(ROOF)); line.setAttribute('pathLength',1); line.setAttribute('stroke-dasharray',1); line.setAttribute('stroke-dashoffset',1);
+// 3. mesh: belt line, a mid longitudinal, sections that start ON the roofline and end ON the belt
+const mesh=$('mesh'), nodes=$('nodes'), SX=[360,520,680,840,1000,1160,1300];
+const belt=el('path',{d:pathD(BELT),pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1}); mesh.appendChild(belt);
+const mid=[];for(const x of [260,...SX,1400]){mid.push([x,(yAt(roofP,x)*.45+yAt(beltP,x)*.55)]);}
+mesh.appendChild(el('path',{d:'M '+mid.map(p=>p.join(' ')).join(' L '),pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1,'stroke-opacity':.18}));
+for(const x of SX){
+  const y0=yAt(roofP,x), y1=yAt(beltP,x), b=(y1-y0)*.28;           // bulge grows with section height
+  mesh.appendChild(el('path',{d:`M ${x} ${y0} C ${x+b} ${y0+(y1-y0)*.35} ${x+b} ${y0+(y1-y0)*.7} ${x} ${y1}`,pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1}));
+  nodes.appendChild(el('circle',{cx:x,cy:y0,r:3,fill:'#fff'}));
+  nodes.appendChild(el('circle',{cx:x,cy:y1,r:2.2,fill:'#9BC5DD','fill-opacity':.8}));
+}
+// wheels: sized from the belt height so they sit on the same ground
+const G=606; for(const cx of [470,1230]){ mesh.appendChild(el('circle',{cx,cy:G,r:58,pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1,'stroke-opacity':.34})); nodes.appendChild(el('circle',{cx,cy:G,r:2.4,fill:'#7DD3FC'})); }
+
+/* ── sequence: sketch (0–1.4s) → line resolves (1.0–3.2s) while sketch fades → mesh (3.3s) → nodes (5.2s) ── */
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const strokes=[...sketch.children], meshEls=[...mesh.children];
+if(reduce){ sketch.remove(); line.style.strokeDashoffset=0; meshEls.forEach(x=>x.style.strokeDashoffset=0); nodes.style.opacity=1; }
+else{
+  strokes.forEach((s,i)=>{s.style.transition=`stroke-dashoffset ${.9+i*.08}s ease-out, stroke-opacity 1.2s ease`; s.style.transitionDelay=`${i*90}ms`;});
+  line.style.transition='stroke-dashoffset 2.2s cubic-bezier(.3,.6,.15,1)';
+  meshEls.forEach(x=>x.style.transition='stroke-dashoffset .75s ease-out');
+  nodes.style.transition='opacity .8s ease';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    strokes.forEach(s=>s.style.strokeDashoffset=0);                                   // many lines
+    setTimeout(()=>{ line.style.strokeDashoffset=0; strokes.forEach(s=>s.style.strokeOpacity=0); },1000);   // one line
+    meshEls.forEach((x,i)=>setTimeout(()=>{x.style.strokeDashoffset=0;},3300+i*140));  // surface as mesh
+    setTimeout(()=>{nodes.style.opacity=1;},3300+meshEls.length*140+300);               // measurement
+  }));
+  const lg=$('lg'); addEventListener('pointermove',e=>{lg.setAttribute('gradientTransform',`translate(${((e.clientX/innerWidth-.5)*.7).toFixed(3)} 0)`);},{passive:true});
+}
+</script></body></html>

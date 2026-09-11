@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proportion — a GP22 design literacy tool</title>
+<meta name="description" content="Car proportion in tire diameters. Ten segments, one line, every length as a ratio. Built on the GP22 side-profile dataset.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<style>
+:root{--bg:#0E0E10;--panel:#141416;--rule:#26262b;--ink:#ECEAE4;--muted:#8E8C86;--acc:#F2C069;--dlo:#5FE0C8;--cab:#7FB8FF;--whl:#C9A0FF;--tire:#FF7A90;--side:#F2C069;--body:#E9E6DF}
+*{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;display:grid;grid-template-rows:52px 1fr auto;height:100vh;overflow:hidden}
+header{display:flex;align-items:center;gap:16px;padding:0 18px;border-bottom:1px solid var(--rule)} header b{font-weight:600} header .sub{color:var(--muted);font-size:14px} header .sp{margin-left:auto} header a,header button{font:inherit;font-size:13px;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:5px 10px;cursor:pointer;text-decoration:none;margin-left:6px} header button[aria-pressed=true]{color:var(--acc);border-color:var(--acc)}
+main{display:grid;grid-template-columns:270px 1fr 300px;min-height:0}
+aside{overflow:auto;padding:14px 12px;border-right:1px solid var(--rule);font-size:13px} aside.r{border-right:0;border-left:1px solid var(--rule);padding:18px 20px}
+aside h2{font-size:13px;font-weight:600;margin:0 0 4px} aside .who{color:var(--muted);font-size:12px;margin-bottom:12px}
+.grp{margin:12px 0 4px;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.row{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;padding:3px 0;color:var(--muted)} .row.on{color:var(--acc)} .row input{width:100%;accent-color:var(--acc)} .row b{font-weight:500;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.stage{position:relative;min-width:0;min-height:0} .stage svg{width:100%;height:100%;display:block}
+.tour h3{font-size:22px;font-weight:600;margin:6px 0 10px;line-height:1.15} .tour p{color:#C9C6BE;font-size:14px} .tour em{color:var(--ink);font-style:normal;font-weight:600}
+.tour .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin:10px 0} .tour .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tour .nav{display:flex;gap:8px;margin-top:16px} .tour .nav button{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:6px;cursor:pointer} .tour .nav .free{margin-left:auto;color:var(--muted)}
+.tour .dots{display:flex;gap:4px;margin-top:14px} .tour .dots i{flex:1;height:2px;background:var(--rule)} .tour .dots i.on{background:var(--acc)}
+footer{border-top:1px solid var(--rule);display:flex;align-items:center;gap:6px;padding:10px 14px;overflow-x:auto}
+.seg{font:inherit;text-align:center;background:transparent;border:1px solid transparent;color:var(--muted);border-radius:8px;padding:4px 10px;cursor:pointer;min-width:56px} .seg b{display:block;font-size:17px;font-weight:600;color:var(--ink)} .seg small{font-size:10px} .seg[aria-pressed=true]{border-color:var(--acc)} .seg[aria-pressed=true] b{color:var(--acc)}
+.morph{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);white-space:nowrap} .morph select{font:inherit;font-size:13px;background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:4px 6px} .morph input{width:140px;accent-color:var(--acc)}
+text{font-family:"IBM Plex Sans",system-ui,sans-serif}
+@media (max-width:980px){main{grid-template-columns:1fr} aside{display:none} body{grid-template-rows:52px 1fr auto}}
+</style></head>
+<body>
+<header><b>Proportion</b><span class="sub">a GP22 design literacy tool · every length in tire diameters (T)</span><span class="sp"></span>
+  <button id="b-tour" aria-pressed="true">Tour</button><button id="b-grid" aria-pressed="true">Grid</button><button id="b-boxes" aria-pressed="true">Boxes</button><button id="b-ghost" aria-pressed="false">Ghost</button><button id="b-svg">Export SVG</button><a href="/">gyunpyolee.com</a></header>
+<main>
+  <aside id="panel"><h2>Parameters</h2><div class="who" id="who"></div><div id="params"></div></aside>
+  <div class="stage"><svg id="v" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" aria-label="Car side profile in tire diameters"></svg></div>
+  <aside class="r"><div class="tour" id="tour"></div></aside>
+</main>
+<footer id="foot"></footer>
+<script>
+const ACC = 0xf2c069;
+const REGION_NAMES = ['body', 'bodyside', 'cabin', 'DLO', 'wheel', 'tire'];
+const REGION_COLORS = [0xe9e6df, 0xf2c069, 0x7fb8ff, 0x5fe0c8, 0xc9a0ff, 0xff7a90];
+const hex = c => '#' + c.toString(16).padStart(6, '0');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const RAD = Math.PI / 180;
+
+const DEFS = [
+  ['overallLength', 'Overall length', 'Package', 4.5, 9.5, 0.01, 'T'],
+  ['wheelbase', 'Wheelbase', 'Package', 2.6, 6.5, 0.01, 'T'],
+  ['frontOverhang', 'Front overhang', 'Package', 0.55, 2.4, 0.01, 'T'],
+  ['rearOverhang', 'Rear overhang', 'Package', 0.55, 3.0, 0.01, 'T'],
+  ['rideHeight', 'Ride height', 'Package', 0.12, 0.7, 0.01, 'T'],
+  ['trackWidth', 'Track width', 'Package', 1.8, 2.9, 0.01, 'T'],
+  ['dashToAxle', 'Dash-to-axle', 'Design', 0.15, 1.6, 0.01, 'T'],
+  ['cowlY', 'Cowl height', 'Design', 0.95, 1.9, 0.01, 'T'],
+  ['aPillarAngle', 'A-pillar angle', 'Design', 18, 70, 0.5, '°'],
+  ['roofHeight', 'Roof height', 'Design', 1.6, 2.9, 0.01, 'T'],
+  ['roofEndX', 'Roof end (X)', 'Design', 2.0, 8.5, 0.01, 'T'],
+  ['cPillarAngle', 'C-pillar angle', 'Design', 15, 82, 0.5, '°'],
+  ['rearForm', 'Rear form (notch → gate)', 'Design', 0, 1, 0.01, ''],
+  ['aPillarWidth', 'A-pillar width', 'Design', 0.05, 0.45, 0.01, 'T'],
+  ['cPillarWidth', 'C-pillar width', 'Design', 0.05, 0.6, 0.01, 'T'],
+  ['beltlineHeight', 'Beltline height', 'Section', 0.8, 1.75, 0.01, 'T'],
+  ['beltlineKick', 'Beltline kick', 'Section', 0, 0.3, 0.01, 'T'],
+  ['sillHeight', 'Sill height', 'Section', 0, 0.35, 0.01, 'T'],
+  ['tumblehome', 'Tumblehome', 'Section', 0, 28, 0.5, '°'],
+  ['shoulderWidth', 'Shoulder half-width', 'Section', 0.9, 1.7, 0.01, 'T'],
+  ['characterLine', 'Character line', 'Section', 0, 0.9, 0.01, ''],
+  ['hoodDrop', 'Hood drop (front)', 'Form', 0.05, 0.6, 0.01, 'T'],
+  ['noseRadius', 'Nose radius', 'Form', 0.05, 0.45, 0.01, 'T'],
+  ['tailRadius', 'Tail radius', 'Form', 0.05, 0.45, 0.01, 'T'],
+  ['roofArc', 'Roof arc', 'Form', 0, 0.15, 0.005, 'T'],
+  ['tailDrop', 'Tail drop', 'Form', 0, 0.4, 0.01, 'T'],
+  ['shoulderRadius', 'Shoulder radius', 'Form', 0.04, 0.22, 0.005, 'T'],
+  ['roofRadius', 'Roof edge crispness', 'Form', 2, 8, 0.1, ''],
+  ['glassTaper', 'Greenhouse taper', 'Form', 0, 0.3, 0.01, ''],
+  ['archFlare', 'Arch flare', 'Form', 0, 0.1, 0.005, 'T'],
+  ['rearWidth', 'Rear width', 'Form', 0.9, 1.06, 0.005, ''],
+  ['fenderPeak', 'Fender peak', 'Form', 0, 0.15, 0.005, 'T'],
+  ['frontRake', 'Front face rake', 'Form', 0, 0.45, 0.01, ''],
+  ['rearRake', 'Rear face rake', 'Form', -0.2, 0.35, 0.01, ''],
+  ['glassCurve', 'Glass curvature (plan)', 'Form', 0, 0.3, 0.005, 'T'],
+  ['wheelDiameter', 'Wheel (rim) diameter', 'Wheel', 0.45, 0.82, 0.01, 'T'],
+  ['tireAspect', 'Tire aspect', 'Wheel', 0.3, 0.8, 0.01, ''],
+  ['archGap', 'Arch gap', 'Wheel', 0.03, 0.25, 0.01, 'T'],
+];
+const DEFMAP = {}; DEFS.forEach(d => DEFMAP[d[0]] = { key: d[0], label: d[1], group: d[2], min: d[3], max: d[4], step: d[5], unit: d[6] });
+const KEYS = DEFS.map(d => d[0]);
+
+// Reference packages per GP22 segment. L / WB / W / H / tire size are published spec-sheet values.
+// Overhangs, cowl position, beltline, roof extent and pillar rakes are NOT published by any manufacturer;
+// they are measured off side-view drawings and are the numbers to correct if you have a package drawing.
+// Everything is normalised by that car's own tire OD.
+
+const SEG_NAMES = { A: 'city', B: 'supermini hatch', B2: 'supermini sedan', C: 'compact hatch', C2: 'compact sedan', D: 'mid-size sedan', D2: 'mid-size touring', E: 'executive sedan', E2: 'executive estate', F: 'luxury', J: 'SUV', S: 'sports', P: 'pickup', M: 'MPV' };
+const SEG_LETTER = s => s.replace(/\d/, '');
+const REF_RAW = {};
+function ref(name, o) {
+  o = Object.assign({ hood: 260, nose: 150, tail: 130, roofArc: 30, tailDrop: 40, shR: 65, roofR: 4.5, taper: 0.05, flare: 10, rearW: 0.99,
+    peak: 0, rakeF: 0.15, rakeR: 0.08, glass: 90, aW: 95, cW: 110 }, o);
+  REF_RAW[name] = o;
+  const T = o.tireOD, rim = o.rimIn * 25.4 / T, sidewall = (1 - rim) / 2, asp = sidewall / (o.tireW / T);
+  return { name, overallLength: o.L / T, wheelbase: o.WB / T, frontOverhang: o.FO / T, rearOverhang: (o.L - o.WB - o.FO) / T,
+    rideHeight: o.GC / T, trackWidth: o.track / T, dashToAxle: o.d2a / T, cowlY: o.cowlY / T, aPillarAngle: o.aP,
+    roofHeight: o.H / T, roofEndX: o.roofEnd / T, cPillarAngle: o.cP, rearForm: o.rf, beltlineHeight: o.belt / T,
+    beltlineKick: o.kick / T, sillHeight: o.sill / T, tumblehome: o.tumble, shoulderWidth: o.W / 2 / T, characterLine: o.cl,
+    wheelDiameter: rim, tireAspect: asp, archGap: o.arch / T, tireOD: T,
+    hoodDrop: (o.hood ?? 260) / T, noseRadius: (o.nose ?? 150) / T, tailRadius: (o.tail ?? 130) / T, roofArc: (o.roofArc ?? 30) / T,
+    tailDrop: (o.tailDrop ?? 40) / T, shoulderRadius: (o.shR ?? 65) / T, roofRadius: o.roofR ?? 4.5, glassTaper: o.taper ?? 0.05,
+    archFlare: (o.flare ?? 10) / T, rearWidth: o.rearW ?? 0.99,
+    fenderPeak: o.peak / T, frontRake: o.rakeF, rearRake: o.rakeR, glassCurve: o.glass / T, aPillarWidth: o.aW / T, cPillarWidth: o.cW / T };
+}
+const PRESETS = {
+  A: ref('Fiat 500',          { L: 3632, WB: 2322, FO: 720, W: 1683, H: 1527, GC: 130, track: 1470, tireOD: 616, rimIn: 17, tireW: 205, d2a: 330, cowlY: 1000, aP: 40, roofEnd: 3200, cP: 62, rf: 1, belt: 950, kick: 40, sill: 90, tumble: 12, arch: 60, cl: 0.50, hood: 250, nose: 220, tail: 200, roofArc: 50, tailDrop: 0, shR: 100, roofR: 3.2, taper: 0.06, flare: 12, rearW: 0.98, peak: 0, rakeF: 0.20, rakeR: 0.05, glass: 110, aW: 110, cW: 200 }),
+  B: ref('VW Polo',           { L: 4053, WB: 2548, FO: 850, W: 1751, H: 1461, GC: 140, track: 1525, tireOD: 621, rimIn: 16, tireW: 195, d2a: 420, cowlY: 960, aP: 32, roofEnd: 3550, cP: 65, rf: 1, belt: 920, kick: 50, sill: 100, tumble: 12, arch: 65, cl: 0.55, hood: 240, nose: 170, tail: 150, roofArc: 30, tailDrop: 0, shR: 70, roofR: 4.0, taper: 0.05, flare: 8, rearW: 0.98, peak: 0, rakeF: 0.16, rakeR: 0.06, glass: 90, aW: 95, cW: 170 }),
+  B2: ref('VW Virtus',         { L: 4561, WB: 2651, FO: 850, W: 1752, H: 1507, GC: 140, track: 1530, tireOD: 621, rimIn: 16, tireW: 195, d2a: 430, cowlY: 970, aP: 31, roofEnd: 3250, cP: 40, rf: 0, belt: 930, kick: 40, sill: 100, tumble: 12, arch: 65, cl: 0.55, hood: 250, nose: 170, tail: 140, roofArc: 30, tailDrop: 40, shR: 70, roofR: 4.0, taper: 0.05, flare: 8, rearW: 0.98, peak: 0, rakeF: 0.16, rakeR: 0.08, glass: 90, aW: 95, cW: 120 }),
+  C: ref('VW Golf',           { L: 4284, WB: 2636, FO: 880, W: 1789, H: 1456, GC: 140, track: 1550, tireOD: 634, rimIn: 17, tireW: 225, d2a: 470, cowlY: 970, aP: 29, roofEnd: 3750, cP: 62, rf: 1, belt: 930, kick: 60, sill: 100, tumble: 13, arch: 65, cl: 0.55, hood: 250, nose: 160, tail: 140, roofArc: 25, tailDrop: 0, shR: 65, roofR: 4.5, taper: 0.05, flare: 10, rearW: 0.98, peak: 0, rakeF: 0.16, rakeR: 0.06, glass: 90, aW: 95, cW: 190 }),
+  C2: ref('VW Jetta',          { L: 4702, WB: 2686, FO: 880, W: 1799, H: 1459, GC: 140, track: 1550, tireOD: 632, rimIn: 16, tireW: 205, d2a: 480, cowlY: 970, aP: 29, roofEnd: 3400, cP: 36, rf: 0, belt: 930, kick: 50, sill: 100, tumble: 13, arch: 65, cl: 0.55, hood: 250, nose: 160, tail: 140, roofArc: 25, tailDrop: 50, shR: 65, roofR: 4.5, taper: 0.05, flare: 10, rearW: 0.98, peak: 0, rakeF: 0.16, rakeR: 0.08, glass: 90, aW: 95, cW: 120 }),
+  D: ref('BMW 3 Series',      { L: 4709, WB: 2851, FO: 800, W: 1827, H: 1442, GC: 130, track: 1596, tireOD: 660, rimIn: 18, tireW: 225, d2a: 700, cowlY: 960, aP: 29, roofEnd: 3380, cP: 43, rf: 0, belt: 900, kick: 50, sill: 100, tumble: 14, arch: 55, cl: 0.55, hood: 240, nose: 150, tail: 130, roofArc: 30, tailDrop: 60, shR: 60, roofR: 4.5, taper: 0.06, flare: 12, rearW: 0.99, peak: 10, rakeF: 0.15, rakeR: 0.10, glass: 95, aW: 95, cW: 120 }),
+  D2: ref('BMW 3 Touring',     { L: 4709, WB: 2851, FO: 800, W: 1827, H: 1440, GC: 130, track: 1596, tireOD: 660, rimIn: 18, tireW: 225, d2a: 700, cowlY: 960, aP: 29, roofEnd: 4250, cP: 60, rf: 1, belt: 900, kick: 40, sill: 100, tumble: 13, arch: 55, cl: 0.55, hood: 240, nose: 150, tail: 120, roofArc: 20, tailDrop: 0, shR: 60, roofR: 5.0, taper: 0.04, flare: 12, rearW: 0.99, peak: 10, rakeF: 0.15, rakeR: 0.06, glass: 95, aW: 95, cW: 200 }),
+  E: ref('Mercedes E-Class',  { L: 4949, WB: 2961, FO: 848, W: 1880, H: 1468, GC: 121, track: 1600, tireOD: 679, rimIn: 19, tireW: 245, d2a: 750, cowlY: 970, aP: 30, roofEnd: 3600, cP: 40, rf: 0, belt: 910, kick: 50, sill: 100, tumble: 15, arch: 55, cl: 0.50, hood: 250, nose: 150, tail: 130, roofArc: 30, tailDrop: 60, shR: 65, roofR: 4.5, taper: 0.06, flare: 10, rearW: 0.99, peak: 10, rakeF: 0.15, rakeR: 0.10, glass: 100, aW: 95, cW: 125 }),
+  E2: ref('Mercedes E Estate', { L: 4949, WB: 2961, FO: 848, W: 1880, H: 1469, GC: 121, track: 1600, tireOD: 679, rimIn: 19, tireW: 245, d2a: 750, cowlY: 970, aP: 30, roofEnd: 4450, cP: 58, rf: 1, belt: 910, kick: 40, sill: 100, tumble: 14, arch: 55, cl: 0.50, hood: 250, nose: 150, tail: 120, roofArc: 20, tailDrop: 0, shR: 65, roofR: 5.0, taper: 0.04, flare: 10, rearW: 0.99, peak: 10, rakeF: 0.15, rakeR: 0.06, glass: 100, aW: 95, cW: 210 }),
+  F: ref('Mercedes S-Class',  { L: 5289, WB: 3216, FO: 877, W: 1954, H: 1503, GC: 120, track: 1669, tireOD: 712, rimIn: 19, tireW: 255, d2a: 830, cowlY: 1000, aP: 27, roofEnd: 3950, cP: 38, rf: 0, belt: 940, kick: 40, sill: 110, tumble: 15, arch: 55, cl: 0.45, hood: 270, nose: 140, tail: 130, roofArc: 30, tailDrop: 50, shR: 70, roofR: 4.5, taper: 0.05, flare: 8, rearW: 0.99, peak: 10, rakeF: 0.14, rakeR: 0.10, glass: 105, aW: 100, cW: 130 }),
+  J: ref('Range Rover',       { L: 5052, WB: 2997, FO: 890, W: 2000, H: 1870, GC: 220, track: 1700, tireOD: 781, rimIn: 21, tireW: 275, d2a: 700, cowlY: 1250, aP: 34, roofEnd: 4650, cP: 75, rf: 1, belt: 1200, kick: 40, sill: 250, tumble: 8, arch: 90, cl: 0.60, hood: 170, nose: 90, tail: 80, roofArc: 10, tailDrop: 0, shR: 50, roofR: 6.5, taper: 0.0, flare: 15, rearW: 1.0, peak: 20, rakeF: 0.05, rakeR: 0.02, glass: 60, aW: 110, cW: 260 }),
+  S: ref('Porsche 911',       { L: 4519, WB: 2450, FO: 850, W: 1852, H: 1300, GC: 110, track: 1600, tireOD: 700, rimIn: 20.5, tireW: 275, d2a: 480, cowlY: 880, aP: 27, roofEnd: 2800, cP: 24, rf: 0, belt: 840, kick: 60, sill: 100, tumble: 16, arch: 45, cl: 0.35, hood: 240, nose: 240, tail: 260, roofArc: 35, tailDrop: 220, shR: 90, roofR: 3.2, taper: 0.16, flare: 35, rearW: 1.03, peak: 60, rakeF: 0.28, rakeR: 0.12, glass: 120, aW: 95, cW: 260 }),
+  P: ref('Ford F-150',        { L: 5885, WB: 3684, FO: 950, W: 2029, H: 1961, GC: 230, track: 1720, tireOD: 815, rimIn: 18, tireW: 275, d2a: 900, cowlY: 1300, aP: 40, roofEnd: 3950, cP: 80, rf: 0, belt: 1250, kick: 20, sill: 300, tumble: 6, arch: 110, cl: 0.50, hood: 150, nose: 90, tail: 80, roofArc: 10, tailDrop: 0, shR: 45, roofR: 6.0, taper: 0.0, flare: 15, rearW: 1.0, peak: 15, rakeF: 0.03, rakeR: 0.00, glass: 50, aW: 110, cW: 170 }),
+  M: ref('Kia Carnival',      { L: 5155, WB: 3090, FO: 950, W: 1995, H: 1740, GC: 160, track: 1720, tireOD: 741, rimIn: 19, tireW: 235, d2a: 480, cowlY: 1200, aP: 44, roofEnd: 4800, cP: 70, rf: 1, belt: 1150, kick: 60, sill: 200, tumble: 7, arch: 75, cl: 0.45, hood: 300, nose: 140, tail: 100, roofArc: 30, tailDrop: 0, shR: 60, roofR: 5.0, taper: 0.02, flare: 8, rearW: 0.99, peak: 0, rakeF: 0.22, rakeR: 0.04, glass: 110, aW: 110, cW: 240 }),
+};
+const SEG_ORDER = ['A', 'B', 'B2', 'C', 'C2', 'D', 'D2', 'E', 'E2', 'F', 'J', 'S', 'P', 'M'];
+
+// Guards. Runs after every change; keeps the model physically coherent.
+
+function resolve(p) {
+  p.frontOverhang = Math.max(0.55, p.frontOverhang);
+  p.rearOverhang = Math.max(0.55, p.rearOverhang);
+  p.wheelbase = Math.max(2.5, p.wheelbase);
+  p.overallLength = p.frontOverhang + p.wheelbase + p.rearOverhang;      // identity, always
+  p.archGap = Math.max(0.03, p.archGap);
+  p.roofHeight = Math.max(p.roofHeight, p.rideHeight + 1.2);
+  const archTop = 1.0 + p.archGap + p.shoulderRadius * 0.5 + 0.03;                // arch crown (tire top + gap) + tight fender radius
+  p.beltlineHeight = clamp(p.beltlineHeight, Math.max(p.rideHeight + 0.5, archTop), p.roofHeight - 0.5);   // greenhouse ≥ 0.5 T tall
+  p.cowlY = clamp(p.cowlY, Math.max(p.rideHeight + 0.5, archTop + 0.02), p.roofHeight - 0.2);
+  const cowlX0 = p.frontOverhang + clamp(p.dashToAxle, 0.15, p.wheelbase - 0.6), hoodT = Math.pow(1 - p.frontOverhang / cowlX0, 1.6);
+  p.hoodDrop = clamp(p.hoodDrop, 0.05, Math.min(p.cowlY - p.rideHeight - 0.35, (p.cowlY - archTop) / Math.max(0.05, hoodT)));   // hood stays above the front tire
+  p.roofArc = clamp(p.roofArc, 0, Math.max(0, p.roofHeight - p.beltlineHeight - 0.35));
+  p.shoulderRadius = clamp(p.shoulderRadius, 0.04, 0.22);
+  p.fenderPeak = clamp(p.fenderPeak || 0, 0, 0.15); p.glassCurve = clamp(p.glassCurve || 0, 0, 0.3);
+  p.frontRake = clamp(p.frontRake || 0, 0, 0.45); p.rearRake = clamp(p.rearRake || 0, -0.2, 0.35);
+  p.dashToAxle = clamp(p.dashToAxle, 0.15, p.wheelbase - 0.6);
+  const beltDeck = p.beltlineHeight + p.beltlineKick;
+  const cRun = (p.roofHeight - beltDeck) / Math.tan(p.cPillarAngle * RAD);
+  const rf = clamp(p.rearForm || 0, 0, 1);
+  const hi = p.overallLength - lerp(0.45, 0.18, rf) - cRun;
+  let cowlX, roofStartX, lo;
+  for (let it = 0; it < 4; it++) {                                                 // if the roof can't fit: cowl forward, then steepen the A-pillar
+    cowlX = p.frontOverhang + p.dashToAxle;
+    roofStartX = cowlX + (p.roofHeight - p.cowlY) / Math.tan(p.aPillarAngle * RAD);
+    lo = Math.max(roofStartX + 0.5, cowlX + 1.2 - cRun);                           // apex between pillars; cabin ≥ 1.2 T long
+    if (hi >= lo) break;
+    const need = lo - hi;
+    const d2a = clamp(p.dashToAxle - need, 0.15, p.wheelbase - 0.6); const got = p.dashToAxle - d2a; p.dashToAxle = d2a;
+    if (got < need - 1e-6) { const run = Math.max(0.05, (p.roofHeight - p.cowlY) / Math.tan(p.aPillarAngle * RAD) - (need - got)); p.aPillarAngle = clamp(Math.atan2(p.roofHeight - p.cowlY, run) / RAD, 18, 70); }
+  }
+  p.roofEndX = hi >= lo ? clamp(p.roofEndX, lo, hi) : lo;
+  {
+    const deckEst = Math.min(p.overallLength - 0.14, p.roofEndX + cRun), ra = p.overallLength - p.rearOverhang;
+    if (deckEst < ra) {                                                              // deck passes over the rear arch: limit the drop there
+      const frac = Math.pow((ra - deckEst) / Math.max(0.05, p.overallLength - deckEst), 1.3);
+      p.tailDrop = clamp(p.tailDrop, 0, Math.max(0, (beltDeck - archTop - 0.02) / Math.max(0.05, frac)));
+    }
+    const cabinLen = deckEst - cowlX, kinkEst = 0.22 + p.beltlineKick * 1.2;          // DLO keeps ≥ 0.5 T of glass between the pillars
+    p.aPillarWidth = clamp(p.aPillarWidth || 0.14, 0.05, 0.45);
+    p.cPillarWidth = clamp(p.cPillarWidth || 0.16, 0.05, Math.max(0.05, cabinLen - p.aPillarWidth - kinkEst - 0.5));
+  }
+  const maxTan = (0.72 * p.shoulderWidth - 0.13) / Math.max(0.3, p.roofHeight - p.beltlineHeight);
+  p.tumblehome = clamp(p.tumblehome, 0, Math.atan(maxTan) / RAD);          // section cannot invert
+  const sidewall = (1 - p.wheelDiameter) / 2, tireW = clamp(sidewall / p.tireAspect, 0.18, 0.6);
+  p.noseRadius = clamp(p.noseRadius, 0.05, Math.max(0.05, p.frontOverhang / 1.3 - 0.05));   // end rounding never reaches the axle
+  p.tailRadius = clamp(p.tailRadius, 0.05, Math.max(0.05, p.rearOverhang / 1.3 - 0.05));
+  const L_ = p.overallLength, xPk = 0.52 * L_, sF = (xPk - p.frontOverhang) / xPk, sR = (L_ - p.rearOverhang - xPk) / (L_ - xPk);
+  const planF = 1 - 0.07 * Math.pow(Math.max(0, sF), 3), planR = lerp(1, p.rearWidth, Math.max(0, sR) * Math.max(0, sR));
+  p.shoulderWidth = Math.max(p.shoulderWidth, (p.trackWidth / 2 + tireW / 2 + 0.005) / (0.985 * Math.min(planF, planR)));   // tire face just inside the fender at both axles
+  return p;
+}
+
+// Coupled edits: one slider, the whole package redistributes.
+function setParam(p, k, v) {
+  const D = DEFMAP[k]; v = clamp(v, D.min, D.max);
+  const L = p.overallLength;
+  if (k === 'overallLength') {
+    const r = v / L; p.frontOverhang = Math.max(0.55, p.frontOverhang * r); p.rearOverhang = Math.max(0.55, p.rearOverhang * r);
+    p.wheelbase = Math.max(2.5, v - p.frontOverhang - p.rearOverhang);
+  } else if (k === 'wheelbase') {
+    v = clamp(v, D.min, L - 1.1);
+    const d = v - p.wheelbase; let f = p.frontOverhang - d / 2, r = p.rearOverhang - d / 2;
+    if (f < 0.55) { r -= (0.55 - f); f = 0.55; }
+    if (r < 0.55) { f -= (0.55 - r); r = 0.55; }
+    if (f < 0.55) { f = 0.55; v = L - 1.1; }
+    p.wheelbase = v; p.frontOverhang = f; p.rearOverhang = r;
+  } else if (k === 'frontOverhang') {
+    v = clamp(v, 0.55, L - p.rearOverhang - 2.5); p.frontOverhang = v; p.wheelbase = L - v - p.rearOverhang;
+  } else if (k === 'rearOverhang') {
+    v = clamp(v, 0.55, L - p.frontOverhang - 2.5); p.rearOverhang = v; p.wheelbase = L - v - p.frontOverhang;
+  } else p[k] = v;
+  return resolve(p);
+}
+function lerpParams(a, b, t) { const o = {}; KEYS.forEach(k => o[k] = lerp(a[k], b[k], t)); o.tireOD = lerp(a.tireOD || 680, b.tireOD || 680, t); return resolve(o); }
+
+/* ============================================================
+   2. Derived geometry — silhouettes, width profile, lines
+   ============================================================ */
+
+function derive(p) {
+  const d = {};
+  d.L = p.overallLength; d.fa = p.frontOverhang; d.ra = d.L - p.rearOverhang; d.rh = p.rideHeight;
+  d.cowlX = d.fa + p.dashToAxle; d.cowlY = p.cowlY; d.roofH = p.roofHeight;
+  d.roofStartX = d.cowlX + (d.roofH - d.cowlY) / Math.tan(p.aPillarAngle * RAD);
+  d.roofEndX = p.roofEndX;
+  d.beltDeck = p.beltlineHeight + p.beltlineKick;
+  d.rf = clamp(p.rearForm || 0, 0, 1);
+  d.deckX = Math.min(d.L - lerp(0.4, 0.14, d.rf), d.roofEndX + (d.roofH - d.beltDeck) / Math.tan(p.cPillarAngle * RAD));
+  d.R = 0.5 + p.archGap; d.rim = p.wheelDiameter; d.sidewall = (1 - d.rim) / 2;
+  d.tireW = clamp(d.sidewall / p.tireAspect, 0.18, 0.6);
+  d.track = p.trackWidth; d.wMax = p.shoulderWidth; d.tumble = p.tumblehome * RAD;
+  d.wi = d.track / 2 - d.tireW * 0.55 - 0.08;
+  d.kink = lerp(0.22 + p.beltlineKick * 1.2, 0.08, d.rf);
+  d.hoodLength = d.cowlX;
+
+  // Beltline: rises toward the rear by beltlineKick.
+  d.belt = x => { const s = clamp((x - d.cowlX) / Math.max(0.5, d.deckX - d.cowlX), 0, 1); return p.beltlineHeight + p.beltlineKick * Math.pow(s, 1.6); };
+
+  // ---- Two-box basis. Shoulder line = top of the lower body; roofline = top of the greenhouse. ----
+  d.rSh = p.shoulderRadius; d.rb = 0.06; d.crown = 0.025; d.hoodDrop = p.hoodDrop; d.noseR = p.noseRadius; d.tailR = p.tailRadius;
+  const cx = d.cowlX, dk = d.deckX, rs = d.roofStartX, re = d.roofEndX, rH = d.roofH, L = d.L, cy = d.cowlY, bd = d.beltDeck;
+  const N = 480, dx = L / N, sh = new Float64Array(N + 1), rf = new Float64Array(N + 1);
+  const doorRun = Math.min(0.9, Math.max(0.3, (dk - cx) * 0.3));
+  for (let i = 0; i <= N; i++) {
+    const x = i * dx; let ysh;
+    if (x < cx) ysh = cy - d.hoodDrop * Math.pow(1 - x / cx, 1.6);                        // hood rises to the cowl
+    else if (x < cx + doorRun) ysh = lerp(cy, d.belt(x), smooth(cx, cx + doorRun, x));      // fender settles onto the belt
+    else if (x < dk) ysh = d.belt(x);                                                     // beltline (+kick)
+    else ysh = bd - lerp(p.tailDrop, 0, d.rf) * Math.pow((x - dk) / Math.max(0.05, L - dk), 1.3); // decklid (notch) or tailgate (gate)
+    let yr = -1; const rA = p.roofArc, rEdge = rH - rA;
+    if (x >= cx && x <= dk) { if (x < rs) yr = lerp(cy, rEdge, (x - cx) / Math.max(0.01, rs - cx));
+      else if (x <= re) { const t = (x - rs) / Math.max(0.01, re - rs); yr = rEdge + rA * smooth(0, 0.35, t) * (1 - smooth(0.65, 1, t)); }   // flat top, zero slope at both roof ends
+      else yr = lerp(rEdge, bd, (x - re) / Math.max(0.01, dk - re)); }
+    sh[i] = ysh; rf[i] = Math.max(ysh, yr);
+  }
+  const blur = (a, r) => { for (let pass = 0; pass < 2; pass++) { const b = new Float64Array(a.length); for (let i = 0; i < a.length; i++) { let acc = 0, n = 0; for (let k = -r; k <= r; k++) { const j = clamp(i + k, 0, a.length - 1); acc += a[j]; n++; } b[i] = acc / n; } a.set(b); } return a; };
+  blur(sh, Math.max(1, Math.round(0.05 / dx)));
+  const rfRaw = Float64Array.from(rf); blur(rf, Math.max(1, Math.round(0.09 / dx)));
+  for (let i = 0; i <= N; i++) {                       // rounding only near the roof corners; pillar bases stay exact
+    const x = i * dx, wA = smooth(rs - 0.4, rs - 0.15, x) * (1 - smooth(rs + 0.15, rs + 0.4, x)), wC = smooth(re - 0.4, re - 0.15, x) * (1 - smooth(re + 0.15, re + 0.4, x));
+    rf[i] = lerp(rfRaw[i], rf[i], Math.max(wA, wC));
+    if (rf[i] < sh[i]) rf[i] = sh[i];
+  }
+  const edge = x => { const front = x < L / 2, r = front ? d.noseR : d.tailR, e = front ? x : L - x; if (e >= r) return 0; const q = (r - e) / r; return r * (1 - Math.sqrt(Math.max(0, 1 - q * q))) * 0.85; };
+  const samp = (a, x) => { const f = clamp(x / dx, 0, N), i = Math.floor(f), t = f - i; return i >= N ? a[N] : lerp(a[i], a[i + 1], t); };
+  d.shoulder = x => samp(sh, x) - edge(x);
+  d.roof = x => samp(rf, x) - edge(x);
+  d.upperY = d.roof;
+  // Lower silhouette.
+  d.lowerCenter = x => { const e = Math.min(x, L - x); const q = Math.max(0, 1 - e / 0.45); return d.rh + 0.10 * q * q; };
+  // Wheel opening. Inside R it is the arch circle; outside it sweeps down into the
+  // rocker over archBlend instead of dropping vertically — the vertical step was what
+  // made the opening read as a rectangular slot cut in a slab.
+  d.archBlend = clamp(d.R * 0.85, 0.30, 0.62);
+  d.archAt = x => {
+    let best = -1;
+    for (const ax of [d.fa, d.ra]) {
+      const a = Math.abs(x - ax); let y = -1;
+      if (a < d.R) y = 0.5 + Math.sqrt(d.R * d.R - a * a);
+      else if (a < d.R + d.archBlend) y = lerp(0.5, d.rh, smooth(0, 1, (a - d.R) / d.archBlend));
+      if (y > best) best = y;
+    }
+    return best;
+  };
+  d.arch = d.archAt;
+  // How strongly a station sits "in" the opening — drives the fender lip roll below.
+  d.archT = x => { let t = 0; for (const ax of [d.fa, d.ra]) t = Math.max(t, 1 - clamp(Math.abs(x - ax) / (d.R + d.archBlend * 0.5), 0, 1)); return t; };
+  // Plan view: near-constant width, slight taper, rounded-box ends.
+  const xPeak = 0.52 * L;
+  d.width = x => {
+    const front = x < xPeak, sP = front ? (xPeak - x) / xPeak : (x - xPeak) / (L - xPeak);
+    let w = d.wMax * (front ? 1 - 0.07 * Math.pow(sP, 3) : lerp(1, p.rearWidth, sP * sP));
+    for (const ax of [d.fa, d.ra]) { const q = Math.abs(x - ax) / (d.R + 0.35); if (q < 1) w += p.archFlare * 0.5 * (1 + Math.cos(Math.PI * q)); }   // fender flare
+    const rPlan = Math.max(0.12, front ? d.noseR * 1.3 : d.tailR * 1.3), e = front ? x : L - x;
+    if (e < rPlan) { const q = (rPlan - e) / rPlan; w *= lerp(0.62, 1, Math.pow(Math.max(0, 1 - Math.pow(q, 2.5)), 1 / 2.5)); }
+    const n = 2.2 + 1.3 * Math.max(0, 1 - sP * sP);
+    return { w, n };
+  };
+  d.aLineX = y => d.cowlX + (y - d.cowlY) / Math.max(0.01, d.roofH - d.cowlY) * (d.roofStartX - d.cowlX);
+  d.cLineX = y => d.roofEndX + (d.roofH - y) / Math.max(0.01, d.roofH - d.beltDeck) * (d.deckX - d.roofEndX);
+  const bm = d.shoulder((d.cowlX + d.deckX) / 2);
+  d.beltMid = bm; d.roofEdgeY = d.roofH - 0.12; d.dloH = Math.max(0, d.roofEdgeY - (bm + 0.05));
+  d.aW = p.aPillarWidth; d.cW = p.cPillarWidth;
+  d.dloX0 = d.aLineX(bm + 0.05) + d.aW; d.dloX1 = d.cLineX(bm + 0.05) - d.cW;
+  // B-pillar: sits a little forward of the DLO midpoint, and only if there is glass to split.
+  d.bW = clamp((d.dloX1 - d.dloX0) * 0.055, 0.030, 0.075);
+  d.bX = d.dloX0 + (d.dloX1 - d.dloX0) * 0.46;
+  if (d.dloX1 - d.dloX0 < 0.85) { d.bW = 0; d.bX = -99; }        // two-seaters keep a single side glass
+  const hMax = d.roofH - d.rh;                                                     // tallest point the shear can act on
+  const LrF = Math.max(d.noseR * 1.6, 3.6 * p.frontRake * hMax + 0.05), LrR = Math.max(d.tailR * 1.6, 3.6 * Math.abs(p.rearRake) * hMax + 0.05);
+  d.shear = x => { const nf = Math.max(0, 1 - x / LrF), nr = Math.max(0, 1 - (d.L - x) / LrR); return p.frontRake * nf * nf - p.rearRake * nr * nr; };
+  const gr = Math.max(0.3, 4.0 * p.glassCurve);                                    // ramps scale with the offset so x stays monotonic
+  d.pzA = x => smooth(d.cowlX, d.cowlX + gr, x) * (1 - smooth(d.roofStartX - gr * 0.6, d.roofStartX + gr * 0.4, x));
+  d.pzC = x => smooth(d.roofEndX - gr * 0.4, d.roofEndX + gr * 0.6, x) * (1 - smooth(d.deckX - gr, d.deckX, x));
+  d.overallHeight = d.roofH; d.dloHeight = d.dloH;
+  d.tireOD = p.tireOD || 680; d.rimIn = d.rim * d.tireOD / 25.4; d.tireWmm = d.tireW * d.tireOD;
+  return d;
+}
+
+/* ============================================================
+   3. The loft — one indexed BufferGeometry, region ids per vertex
+   ============================================================ */
+// Region ids (GP22): 0 body · 1 bodyside · 2 cabin · 3 DLO · 4 wheel · 5 tire
+
+const CHAPTERS = [
+  { title: 'The tire is the ruler', cap: 'Every length here is written in tire diameters, <em>T</em>. A car is not 4.8 metres long, it is <em>seven tires</em> long. This is how GP22 reads proportion: hold the wheel constant and everything else becomes a ratio you can compare across brands and segments. The grid on the floor is 1 T.', regions: [5], unlocked: ['overallLength', 'roofHeight'] },
+  { title: 'Wheel and stance', cap: 'GP22 separates the <em>wheel</em> (the rim) from the <em>tire</em>. The rim eats the sidewall as it grows; the tire stays 1 T. The arch gap decides whether a car sits or floats, and track width decides how much body hangs outside the wheels. Segments carry their own conventions — 15–16″ on a city car, 18″ on a mid-size sedan, 20″ on luxury, SUV and sports cars — and the presets below use them. Push the rim up and the gap down and watch the same body turn planted.', regions: [4, 5], unlocked: ['wheelDiameter', 'tireAspect', 'archGap', 'trackWidth', 'rideHeight'] },
+  { title: 'Overhang', cap: 'The <em>body</em> box runs bumper to bumper. The <em>bodyside</em> box runs wheel to wheel. The difference is overhang, and overhang is mostly a story about what sits ahead of the front axle. Long front overhang reads as front-drive economy; a body pulled tight over the wheels reads as expensive.', regions: [0, 1], unlocked: ['frontOverhang', 'rearOverhang', 'wheelbase', 'overallLength'] },
+  { title: 'Dash-to-axle', cap: 'The distance from the front axle to the base of the windshield. Front-engine, rear-drive packages put the engine behind the axle, which pushes the cowl back and stretches the hood. Front-drive packages pull everything forward. Watch the cowl, hood and A-pillar move as one — this is the single number people mean when they say a car looks <em>prestigious</em>.', regions: [0, 2], unlocked: ['dashToAxle', 'aPillarAngle', 'cowlY'] },
+  { title: 'Cabin and daylight opening', cap: 'The <em>cabin</em> is the greenhouse volume above the beltline. The <em>DLO</em> is its glass — a region bounded by beltline, roofline and the two pillars, so it is never drawn, only derived. Tumblehome leans the glass inward and thins the cabin from behind; the kink where the beltline meets the C-pillar is the Hofmeister move that every rear-drive coupe borrows.', regions: [2, 3], unlocked: ['tumblehome', 'cPillarAngle', 'roofEndX', 'beltlineKick', 'roofHeight', 'beltlineHeight'] },
+  { title: 'Bodyside to DLO', cap: 'Stack the bodyside height against the DLO height and you have the ratio that sets visual mass. Tall glass over a low bodyside is airy and habitable — an MPV, a first-generation hatch. A sliver of glass over a deep flank is heavy, fast, a little hostile. Segments cluster on this number; the sliders let you walk between them.', regions: [1, 3], unlocked: ['beltlineHeight', 'sillHeight', 'shoulderWidth', 'roofHeight', 'rideHeight'] }
+];
+
+/* ── state ─────────────────────────────────────────────────────────────── */
+const $=s=>document.querySelector(s), NS='http://www.w3.org/2000/svg';
+const RC=['#E9E6DF','#F2C069','#7FB8FF','#5FE0C8','#C9A0FF','#FF7A90'];
+let P=resolve(Object.assign({},PRESETS.D)), D=derive(P), cur='D', ghostKey=null, morphTo='S', morphT=0;
+let show={grid:true,boxes:true,ghost:false,tour:true}; let chapter=0, activeRegions=[];
+const tween={a:null};
+
+/* ── geometry sampling (all in T) ──────────────────────────────────────── */
+function profile(d){
+  const L=d.L, n=220, top=[], bot=[];
+  for(let i=0;i<=n;i++){ const x=L*i/n; top.push([x, d.roof(x)]); }
+  for(let i=n;i>=0;i--){ const x=L*i/n; const a=d.arch(x); bot.push([x, a>0? Math.max(a, d.lowerCenter(x)) : d.lowerCenter(x)]); }
+  return {top,bot};
+}
+function shoulderLine(d){ const L=d.L,n=160,pts=[]; for(let i=0;i<=n;i++){const x=L*i/n; pts.push([x,d.shoulder(x)]);} return pts; }
+function dlo(d){
+  // side light: bottom follows the belt line, sides follow the A- and C-pillar lines, top just under the rail
+  const yt=d.roofEdgeY, xa=y=>d.aLineX(y)+d.aW, xc=(y,u)=>d.cLineX(y)-d.cW-d.kink*(1-u);
+  const yb0=d.belt(d.cowlX+0.4), xA0=xa(yb0), xC0=xc(d.belt(d.deckX-0.3),0), pts=[], n=24;
+  for(let i=0;i<=n;i++){ const x=xA0+(xC0-xA0)*i/n; pts.push([x, d.belt(x)]); }                       // belt
+  for(let i=1;i<=n;i++){ const u=i/n, y=d.belt(xC0)+(yt-d.belt(xC0))*u; pts.push([xc(y,u), y]); }       // C line
+  for(let i=1;i<n;i++){ const y=yt; pts.push([xc(yt,1)+(xa(yt)-xc(yt,1))*i/n, y]); }                    // rail
+  for(let i=n;i>=1;i--){ const u=i/n, y=yb0+(yt-yb0)*u; pts.push([xa(y), y]); }                          // A line
+  return pts;
+}
+
+/* ── svg drawing ───────────────────────────────────────────────────────── */
+const SC=118, X0=60, Y0=345;          // 1 T = 118 px; ground at y=345
+const sx=x=>X0+x*SC, sy=y=>Y0-y*SC;
+const path=pts=>pts.map((p,i)=>(i?'L':'M')+sx(p[0]).toFixed(1)+' '+sy(p[1]).toFixed(1)).join(' ');
+const el=(t,a,txt)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;};
+const svg=$('#v');
+function draw(d,opts={}){
+  const g=el('g',{}); svg.replaceChildren(g);
+  const dimc=r=>activeRegions.length? (activeRegions.includes(r)?1:0.18) : 1;
+  // grid: 1 T
+  if(show.grid){ const gg=el('g',{stroke:'#26262b','stroke-width':1}); for(let x=0;x<=8;x++) gg.appendChild(el('line',{x1:sx(x),y1:sy(0),x2:sx(x),y2:sy(2.6)})); for(let y=0;y<=2.6;y+=1) gg.appendChild(el('line',{x1:sx(0),y1:sy(y),x2:sx(8),y2:sy(y)})); g.appendChild(gg); }
+  g.appendChild(el('line',{x1:sx(-0.3),y1:sy(0),x2:sx(8.3),y2:sy(0),stroke:'#3a3a40','stroke-width':1.2}));
+  // ghost: another preset behind, faint
+  if(show.ghost&&ghostKey){ const gd=derive(resolve(Object.assign({},PRESETS[ghostKey]))); const pr=profile(gd); g.appendChild(el('path',{d:path(pr.top)+' '+path(pr.bot).replace('M','L')+' Z',fill:'none',stroke:'#F2C069','stroke-opacity':.28,'stroke-width':1.2,'stroke-dasharray':'4 4'})); }
+  // wheels
+  for(const cx of [d.fa,d.ra]){ g.appendChild(el('circle',{cx:sx(cx),cy:sy(0.5),r:0.5*SC,fill:'#151517',stroke:RC[5],'stroke-opacity':dimc(5),'stroke-width':1.6}));
+    g.appendChild(el('circle',{cx:sx(cx),cy:sy(0.5),r:d.rim/2*SC,fill:'none',stroke:RC[4],'stroke-opacity':dimc(4),'stroke-width':1.2}));
+    for(let k=0;k<5;k++){const a=k/5*Math.PI*2; g.appendChild(el('line',{x1:sx(cx),y1:sy(0.5),x2:sx(cx)+Math.cos(a)*d.rim/2*SC*0.9,y2:sy(0.5)-Math.sin(a)*d.rim/2*SC*0.9,stroke:RC[4],'stroke-opacity':dimc(4)*0.5,'stroke-width':1}));} }
+  // body: one line
+  const pr=profile(d); const body=el('path',{d:path(pr.top)+' '+path(pr.bot).replace('M','L')+' Z',fill:'#17181B',stroke:RC[0],'stroke-opacity':Math.max(dimc(0),dimc(1)),'stroke-width':2.2,'stroke-linejoin':'round',id:'bodyline'}); g.appendChild(body);
+  g.appendChild(el('path',{d:path(shoulderLine(d)),fill:'none',stroke:RC[1],'stroke-opacity':dimc(1)*0.9,'stroke-width':1.2}));
+  const dl=dlo(d); g.appendChild(el('path',{d:path(dl)+' Z',fill:RC[3],'fill-opacity':0.10*dimc(3),stroke:RC[3],'stroke-opacity':dimc(3),'stroke-width':1.3}));
+  // boxes: the six GP22 features
+  if(show.boxes){
+    const bx=(x0,x1,y0,y1,r,label)=>{ const bb=el('g',{opacity:dimc(r)}); bb.appendChild(el('rect',{x:sx(x0),y:sy(y1),width:(x1-x0)*SC,height:(y1-y0)*SC,fill:'none',stroke:RC[r],'stroke-width':1,'stroke-dasharray':'5 4','stroke-opacity':.85}));
+      bb.appendChild(el('text',{x:sx(x0)+4,y:sy(y1)-5,fill:RC[r],'font-size':11,'letter-spacing':'.05em'},label+'  '+((x1-x0).toFixed(2))+' × '+((y1-y0).toFixed(2))+' T')); g.appendChild(bb); };
+    bx(0,d.L,0,d.roofH,0,'BODY'); bx(d.fa-d.R,d.ra+d.R,d.rh,d.belt((d.fa+d.ra)/2),1,'BODYSIDE'); bx(d.cowlX,d.deckX,d.belt(d.cowlX+0.4),d.roofH,2,'CABIN');
+    const xs=dl.map(p=>p[0]),ys=dl.map(p=>p[1]); bx(Math.min(...xs),Math.max(...xs),Math.min(...ys),Math.max(...ys),3,'DLO');
+    bx(d.fa-d.rim/2,d.fa+d.rim/2,0.5-d.rim/2,0.5+d.rim/2,4,'WHEEL'); bx(d.ra-0.5,d.ra+0.5,0,1,5,'TIRE');
+  }
+  // dimensions in T
+  const dim=(x0,x1,y,label,r)=>{ const dd=el('g',{opacity:dimc(r)}); dd.appendChild(el('line',{x1:sx(x0),y1:sy(y),x2:sx(x1),y2:sy(y),stroke:RC[r],'stroke-width':1})); for(const x of [x0,x1]) dd.appendChild(el('line',{x1:sx(x),y1:sy(y)-5,x2:sx(x),y2:sy(y)+5,stroke:RC[r],'stroke-width':1})); dd.appendChild(el('text',{x:sx((x0+x1)/2),y:sy(y)-6,'text-anchor':'middle',fill:RC[r],'font-size':11},label)); g.appendChild(dd); };
+  dim(0,d.L,-0.28,'L = '+d.L.toFixed(2)+' T',0); dim(d.fa,d.ra,-0.16,'wheelbase '+(d.ra-d.fa).toFixed(2)+' T',5); dim(0,d.fa,-0.16,(d.fa).toFixed(2),0); dim(d.ra,d.L,-0.16,(d.L-d.ra).toFixed(2),0);
+  const vd=(x,y0,y1,label,r)=>{const dd=el('g',{opacity:dimc(r)}); dd.appendChild(el('line',{x1:sx(x),y1:sy(y0),x2:sx(x),y2:sy(y1),stroke:RC[r],'stroke-width':1})); dd.appendChild(el('text',{x:sx(x)+6,y:sy((y0+y1)/2)+4,fill:RC[r],'font-size':11},label)); g.appendChild(dd);};
+  vd(d.L+0.25,0,d.roofH,'H = '+d.roofH.toFixed(2)+' T',0); vd(d.fa,0,1,'T = 1',5);
+  if(opts.drawOn){ const len=body.getTotalLength(); body.style.strokeDasharray=len; body.style.strokeDashoffset=len; (window.anime? anime({targets:body,strokeDashoffset:[len,0],duration:1600,easing:'easeInOutCubic'}) : (body.style.transition='stroke-dashoffset 1.6s ease',requestAnimationFrame(()=>body.style.strokeDashoffset=0))); }
+}
+
+/* ── parameter panel ───────────────────────────────────────────────────── */
+
+function buildPanel(){
+  const root=$('#params'); root.replaceChildren();
+  let lastG=null;
+  DEFS.forEach(([k,label,gi,min,max,step])=>{ if(gi!==lastG){ root.appendChild(Object.assign(document.createElement('div'),{className:'grp',textContent:gi})); lastG=gi; }
+    const row=document.createElement('div'); row.className='row'; row.dataset.k=k; row.innerHTML=`<span>${label}</span><input type="range" min="${min}" max="${max}" step="${step||0.01}" value="${P[k]}"><b>${fmtV(k,P[k])}</b>`;
+    row.querySelector('input').addEventListener('input',e=>{ setParam(P,k,parseFloat(e.target.value)); D=derive(P); row.querySelector('b').textContent=fmtV(k,P[k]); draw(D); $('#who').textContent=(cur? PRESETS[cur].name : 'custom')+' · T = '+Math.round(P.tireOD||0)+' mm'; cur=null; });
+    root.appendChild(row); });
+}
+const fmtV=(k,v)=>/angle/i.test(k)? v.toFixed(1)+'°' : (v.toFixed(2));
+function syncPanel(){ document.querySelectorAll('.row').forEach(r=>{ const k=r.dataset.k; r.querySelector('input').value=P[k]; r.querySelector('b').textContent=fmtV(k,P[k]); const ch=CHAPTERS[chapter]; r.classList.toggle('on', show.tour && ch && ch.unlocked.includes(k)); }); }
+
+/* ── presets, morph, transitions ───────────────────────────────────────── */
+function goPreset(key,animate=true){
+  const target=resolve(Object.assign({},PRESETS[key])); cur=key; $('#who').textContent=PRESETS[key].name+' · T = '+Math.round(target.tireOD||0)+' mm';
+  document.querySelectorAll('.seg').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===key));
+  const from=Object.assign({},P);
+  const apply=t=>{ P=lerpParams(from,target,t); D=derive(P); draw(D); syncPanel(); };
+  if(!animate||!window.anime){ apply(1); return; }
+  if(tween.a) tween.a.pause(); const o={t:0}; tween.a=anime({targets:o,t:1,duration:700,easing:'easeInOutCubic',update:()=>apply(o.t)});
+}
+function buildFooter(){
+  const f=$('#foot'); f.replaceChildren();
+  SEG_ORDER.forEach(k=>{ const b=document.createElement('button'); b.className='seg'; b.dataset.k=k; b.setAttribute('aria-pressed',k===cur); b.innerHTML=`<b>${SEG_LETTER(k)}</b><small>${PRESETS[k].name.replace(/^(VW|BMW|Mercedes|Ford|Kia|Fiat|Porsche|Range) /,'')}</small>`; b.title=PRESETS[k].name+' · '+SEG_NAMES[k]; b.onclick=()=>goPreset(k); f.appendChild(b); });
+  const m=document.createElement('div'); m.className='morph'; m.innerHTML=`Morph to <select id="mto">${SEG_ORDER.map(k=>`<option value="${k}" ${k===morphTo?'selected':''}>${SEG_LETTER(k)} · ${PRESETS[k].name}</option>`).join('')}</select><input type="range" id="mt" min="0" max="1" step="0.01" value="0"><span id="mv">0%</span>`; f.appendChild(m);
+  $('#mto').onchange=e=>{morphTo=e.target.value; $('#mt').value=0; $('#mv').textContent='0%';};
+  $('#mt').oninput=e=>{ const t=parseFloat(e.target.value); const a=resolve(Object.assign({},PRESETS[cur||'D'])), b=resolve(Object.assign({},PRESETS[morphTo])); P=lerpParams(a,b,t); D=derive(P); draw(D); syncPanel(); $('#mv').textContent=Math.round(t*100)+'%'; };
+}
+
+/* ── tour ──────────────────────────────────────────────────────────────── */
+function renderTour(){
+  const t=$('#tour'); if(!show.tour){ t.innerHTML='<p style="color:var(--muted)">Explore freely. Drag any slider; every length updates in T.</p>'; activeRegions=[]; syncPanel(); return; }
+  const ch=CHAPTERS[chapter]; activeRegions=ch.regions||[];
+  t.innerHTML=`<div class="who">Guided tour · ${chapter+1} / ${CHAPTERS.length}</div><h3>${ch.title}</h3><p>${ch.cap}</p><div class="legend">${(ch.regions||[]).map(r=>`<span><i style="background:${RC[r]}"></i>${REGION_NAMES[r]}</span>`).join('')}</div><div class="dots">${CHAPTERS.map((_,i)=>`<i class="${i<=chapter?'on':''}"></i>`).join('')}</div><div class="nav"><button id="t-prev">Previous</button><button id="t-next">Next</button><button class="free" id="t-free">Explore freely</button></div>`;
+  $('#t-prev').onclick=()=>{chapter=Math.max(0,chapter-1);renderTour();draw(D);}; $('#t-next').onclick=()=>{chapter=Math.min(CHAPTERS.length-1,chapter+1);renderTour();draw(D);}; $('#t-free').onclick=()=>{show.tour=false;$('#b-tour').setAttribute('aria-pressed',false);renderTour();draw(D);};
+  syncPanel();
+}
+
+/* ── header controls ───────────────────────────────────────────────────── */
+const toggle=(id,key)=>{ $(id).onclick=()=>{ show[key]=!show[key]; $(id).setAttribute('aria-pressed',show[key]); if(key==='tour') renderTour(); draw(D); }; };
+toggle('#b-grid','grid'); toggle('#b-boxes','boxes'); toggle('#b-tour','tour');
+$('#b-ghost').onclick=()=>{ show.ghost=!show.ghost; if(show.ghost) ghostKey=morphTo; $('#b-ghost').setAttribute('aria-pressed',show.ghost); draw(D); };
+$('#b-svg').onclick=()=>{ const s=new XMLSerializer().serializeToString(svg); const b=new Blob([s.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg" style="background:#0E0E10"')],{type:'image/svg+xml'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`proportion-${cur||'custom'}.svg`; a.click(); };
+document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'&&show.tour){$('#t-next')?.click();} if(e.key==='ArrowLeft'&&show.tour){$('#t-prev')?.click();} });
+
+/* ── boot ──────────────────────────────────────────────────────────────── */
+buildPanel(); buildFooter(); $('#who').textContent=PRESETS.D.name+' · T = '+Math.round(P.tireOD||0)+' mm'; renderTour(); draw(D,{drawOn:true});
+</script></body></html>

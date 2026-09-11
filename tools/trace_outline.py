@@ -26,6 +26,9 @@ def trace(img, L, WB, FO, tire, n=160):
     # extent from the body above the shadow band (the lowest 8% of the car's height), so a cast shadow can't widen it
     ys_all = np.nonzero(body.any(axis=1))[0]; cut = int(ys_all.max() - 0.08 * (ys_all.max() - ys_all.min()))
     xs = np.nonzero(body[:cut].any(axis=0))[0]; x0, x1 = xs.min(), xs.max()
+    Tpx = (x1 - x0) / (L / tire)
+    # second pass: a car column has body at bumper height (a quarter tyre above the lowest body row); shadow columns don't
+    cut2 = int(ys_all.max() - 0.25 * Tpx); xs = np.nonzero(body[:cut2].any(axis=0))[0]; x0, x1 = xs.min(), xs.max()
     Tpx = (x1 - x0) / (L / tire)                                   # scale from the known length
     fa = x0 + FO / tire * Tpx; ra = fa + WB / tire * Tpx
     # ground: lowest dark pixel in the columns around each axle (tyre bottoms; shadows are grey, tyres are black)

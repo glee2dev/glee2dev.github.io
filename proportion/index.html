@@ -348,29 +348,33 @@ function silhouette(d,p,form){
   const L=d.L, rh=Math.max(0.12,d.rh), roofH=d.roofH, cowlX=d.cowlX, cowlY=d.cowlY, fa=d.fa, ra=d.ra, R=d.R;
   const aRun=(roofH-cowlY)/Math.tan(p.aPillarAngle*RAD), cRun=(roofH-d.beltDeck)/Math.tan(Math.max(20,p.cPillarAngle)*RAD);
   const belt=d.belt, deckY=Math.max(d.beltDeck, rh+0.9), noseY=Math.max(rh+0.55, cowlY-0.28), tailY=deckY-0.02;
+  const crown=0.035;                                                                  // roof and hood are never straight
+  const nose=[[0.05,rh+0.16],[0.0,rh+0.5,0.16],[0.02,noseY,0.22]];                     // leaning front face, generous corner
+  const hood=[[(cowlX-0.2)*0.5,cowlY-0.10,0.9],[cowlX-0.12,cowlY-0.02,0.45]];         // convex hood into a soft cowl
+  const rake=0.10;                                                                    // tail leans forward at the top
   let top=[];
-  if(form==='sports'){                                                // one flowing line, nose to tail
-    const ny=Math.max(rh+0.45,cowlY-0.42);
-    top=[[0.04,rh+0.2],[0.0,ny-0.15,0.10],[0.06,ny,0.12],[cowlX-0.3,cowlY-0.12,0.9],[cowlX+aRun*0.55,roofH-0.06,0.8],[cowlX+aRun+0.3,roofH,1.2],[Math.max(cowlX+aRun+1.2,L-2.2),roofH-0.02,1.6],[L-0.55,deckY+0.10,0.7],[L-0.06,deckY-0.02,0.10],[L,deckY-0.25,0.06],[L-0.02,rh+0.2]];
-  } else if(form==='mpv'){                                            // one-box: long A-pillar from low on the nose to a flat roof, flush tail
-    const nx=0.05, ny=Math.max(rh+0.6,cowlY-0.35), ax=cowlX*0.55, ay=cowlY-0.18;
-    top=[[nx,rh+0.2],[nx,ny,0.10],[ax,ay,0.35],[ax+(roofH-ay)/Math.tan(p.aPillarAngle*RAD),roofH,0.55],[L-0.28,roofH,0.16],[L,roofH-0.22,0.10],[L,rh+0.3],[L-0.02,rh+0.2]];
-  } else if(form==='pickup'){                                         // cab with a vertical back, flat bed, flush nose and tail
+  if(form==='sports'){
+    const ny=Math.max(rh+0.45,cowlY-0.42), rs=cowlX+aRun*0.9, re=Math.max(rs+1.4,L-2.1);
+    top=[[0.06,rh+0.16],[0.0,rh+0.42,0.18],[0.05,ny,0.30],[cowlX*0.5,ny+(cowlY-ny)*0.45,1.4],[cowlX,cowlY-0.10,1.2],[rs,roofH-0.02,1.6],[(rs+re)/2,roofH+0.02,2.0],[re,roofH-0.05,2.0],[L-0.7,deckY+0.16,1.1],[L-0.12,deckY-0.02,0.22],[L-0.02,deckY-0.28,0.10],[L-0.08,rh+0.16]];
+  } else if(form==='mpv'){
+    const ny=Math.max(rh+0.6,cowlY-0.35), ax=cowlX*0.55, ay=cowlY-0.18, rs=ax+(roofH-ay)/Math.tan(p.aPillarAngle*RAD);
+    top=[[0.06,rh+0.16],[0.0,rh+0.5,0.16],[0.04,ny,0.34],[ax,ay,0.9],[rs,roofH,1.0],[(rs+L-0.3)/2,roofH+crown,2.2],[L-0.30,roofH,0.36],[L,roofH-0.30,0.22],[L-rake,rh+0.3,0.14],[L-rake-0.04,rh+0.16]];
+  } else if(form==='pickup'){
     const cabBack=cowlX+aRun+Math.max(0.9,d.roofEndX-cowlX-aRun-0.2), bedY=belt(L-0.5);
-    top=[[0.02,rh+0.2],[0,noseY,0.12],[cowlX-0.15,cowlY-0.02,0.20],[cowlX,cowlY,0.12],[cowlX+aRun,roofH,0.22],[cabBack,roofH,0.10],[cabBack+0.06,bedY,0.06],[L,bedY,0.06],[L,rh+0.3],[L-0.02,rh+0.2]];
-  } else if(form==='wagon'){                                          // roof runs to the tail; short steep drop; flush rear face
-    top=[[0.02,rh+0.2],[0,noseY,0.12],[cowlX-0.2,cowlY-0.03,0.30],[cowlX,cowlY,0.16],[cowlX+aRun,roofH,0.30],[L-0.32,roofH,0.14],[L,roofH-0.28,0.10],[L,rh+0.3],[L-0.02,rh+0.2]];
-  } else if(form==='hatch'){                                          // shorter roof, steep tailgate to the belt, flush below
-    const re=Math.min(L-0.35, Math.max(cowlX+aRun+1.4, d.roofEndX));
-    top=[[0.02,rh+0.2],[0,noseY,0.12],[cowlX-0.2,cowlY-0.03,0.30],[cowlX,cowlY,0.16],[cowlX+aRun,roofH,0.30],[re,roofH,0.20],[L-0.04,deckY+0.05,0.12],[L,deckY-0.1,0.06],[L,rh+0.3],[L-0.02,rh+0.2]];
-  } else {                                                            // notchback: C-pillar to a deck, deck to the tail
-    const re=Math.min(L-cRun-0.5, Math.max(cowlX+aRun+1.2, d.roofEndX));
-    top=[[0.02,rh+0.2],[0,noseY,0.12],[cowlX-0.2,cowlY-0.03,0.30],[cowlX,cowlY,0.16],[cowlX+aRun,roofH,0.30],[re,roofH,0.34],[re+cRun,deckY,0.22],[L-0.02,tailY,0.08],[L,tailY-0.2,0.06],[L,rh+0.3],[L-0.02,rh+0.2]];
+    top=[[0.06,rh+0.16],[0.0,rh+0.5,0.14],[0.02,noseY,0.18],...hood,[cowlX,cowlY,0.30],[cowlX+aRun,roofH,0.42],[(cowlX+aRun+cabBack)/2,roofH+crown*0.6,1.2],[cabBack,roofH,0.20],[cabBack+0.06,bedY,0.10],[(cabBack+L)/2,bedY+0.01,1.5],[L,bedY,0.10],[L-rake*0.6,rh+0.3,0.14],[L-0.1,rh+0.16]];
+  } else if(form==='wagon'){
+    const rs=cowlX+aRun, re=L-0.34;
+    top=[...nose,...hood,[cowlX,cowlY,0.30],[rs,roofH,0.55],[(rs+re)/2,roofH+crown,2.4],[re,roofH,0.30],[L,roofH-0.30,0.24],[L-rake,rh+0.3,0.14],[L-rake-0.04,rh+0.16]];
+  } else if(form==='hatch'){
+    const rs=cowlX+aRun, re=Math.min(L-0.4, Math.max(rs+1.4, d.roofEndX));
+    top=[...nose,...hood,[cowlX,cowlY,0.30],[rs,roofH,0.55],[(rs+re)/2,roofH+crown,2.2],[re,roofH,0.42],[L-0.06,deckY+0.06,0.26],[L,deckY-0.12,0.14],[L-rake,rh+0.3,0.14],[L-rake-0.04,rh+0.16]];
+  } else {
+    const rs=cowlX+aRun, re=Math.min(L-cRun-0.5, Math.max(rs+1.2, d.roofEndX));
+    top=[...nose,...hood,[cowlX,cowlY,0.30],[rs,roofH,0.60],[(rs+re)/2,roofH+crown,2.2],[re,roofH,0.62],[re+cRun,deckY,0.55],[(re+cRun+L)/2,deckY+0.01,1.6],[L-0.02,tailY,0.16],[L,tailY-0.22,0.10],[L-rake,rh+0.3,0.14],[L-rake-0.04,rh+0.16]];
   }
   const T=fillet(top);
-  // underside: rocker with vertical legs at the wheel openings, tail to nose
-  const arcs=[ra,fa].map(cx=>{const o=[]; for(let k=0;k<=14;k++){const a=Math.PI*(1-k/14); o.push([cx+Math.cos(a)*R, 0.5+Math.sin(a)*R]);} return o;});
-  let bot=[[L-0.02,rh],[ra+R,rh],[ra+R,0.5]]; bot=bot.concat(arcs[0].reverse().map(q=>q)); bot.push([ra-R,rh],[fa+R,rh],[fa+R,0.5]); bot=bot.concat(arcs[1].reverse()); bot.push([fa-R,rh],[0.02,rh]);
+  const arcs=[ra,fa].map(cx=>{const o=[]; for(let k=0;k<=16;k++){const a=Math.PI*(1-k/16); o.push([cx+Math.cos(a)*R, 0.5+Math.sin(a)*R]);} return o;});
+  let bot=[[T[T.length-1][0],rh],[ra+R,rh],[ra+R,0.5]]; bot=bot.concat(arcs[0].reverse()); bot.push([ra-R,rh],[fa+R,rh],[fa+R,0.5]); bot=bot.concat(arcs[1].reverse()); bot.push([fa-R,rh],[T[0][0],rh]);
   return {top:T, bot};
 }
 function dlo(d,p,form){
@@ -390,7 +394,7 @@ function dlo(d,p,form){
   for(let i=1;i<=n;i++){ const y=yb(xC0)+0.02+(yt-yb(xC0)-0.02)*i/n; pts.push([rear(y),y]); }
   for(let i=1;i<n;i++){ pts.push([rear(yt)+(xa(yt)-rear(yt))*i/n, yt]); }
   for(let i=n;i>=1;i--){ const y=yb(xA0)+0.02+(yt-yb(xA0)-0.02)*i/n; pts.push([xa(y),y]); }
-  return fillet(pts.map((q,i)=>[q[0],q[1],(i%n===0)?0.08:0]));
+  return fillet(pts.map((q,i)=>[q[0],q[1],(i%n===0)?0.16:0]));
 }
 function shoulderLine(d){ const L=d.L,n=160,pts=[]; for(let i=0;i<=n;i++){const x=L*i/n; pts.push([x,d.belt(x)]);} return pts; }
 

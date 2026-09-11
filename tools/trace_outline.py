@@ -1,104 +1,69 @@
 #!/usr/bin/env python3
 """
-Trace a car side-profile image into a T-normalised outline for the proportion tool.
-  python tools/trace_outline.py image.png --name "BMW 3 Series" --key D [--out outlines/D.json] [--preview]
-Assumes a straight side view on a plain background. Output: JSON with top/bottom outlines in
-tire-diameter units, axle positions, and overall length; plus an optional preview PNG.
+Trace a car side-profile photo into a T-normalised top outline, using the car's known package
+(length, wheelbase, front overhang, tyre OD in mm) for scale and axle placement.
+  python tools/trace_outline.py img.png --key D --name "BMW 3 Series" --L 4713 --WB 2851 --FO 831 --tire 660 [--flip] [--preview]
 """
-import argparse, json, sys
+import argparse, json
 from pathlib import Path
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw
+from scipy import ndimage
 
-def mask_car(img: Image.Image) -> np.ndarray:
-    a = np.asarray(img.convert("RGB")).astype(np.int32)
-    h, w, _ = a.shape
-    # background colour = median of the border pixels
-    border = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
-    bg = np.median(border, axis=0)
-    diff = np.abs(a - bg).sum(axis=2)
-    m = diff > 60
-    # keep the largest blob
-    from scipy import ndimage
+def largest(m):
     lab, n = ndimage.label(m)
-    if n == 0: raise SystemExit("no foreground found")
-    sizes = ndimage.sum(m, lab, range(1, n + 1))
-    m = lab == (1 + int(np.argmax(sizes)))
-    m = ndimage.binary_closing(m, iterations=3)
-    m = ndimage.binary_fill_holes(m)
-    return m
+    if n == 0: return m
+    sizes = ndimage.sum(m, lab, range(1, n + 1)); return lab == (1 + int(np.argmax(sizes)))
 
-def wheels(mask: np.ndarray):
-    """Wheel centres and radius from the two lowest 'bumps' of the mask: columns where the mask
-    reaches the ground line. Returns (fa_x, ra_x, radius_px, ground_y)."""
-    h, w = mask.shape
-    bottom = np.array([np.max(np.nonzero(mask[:, x])[0]) if mask[:, x].any() else -1 for x in range(w)])
-    ground = int(np.percentile(bottom[bottom > 0], 99))
-    on_ground = bottom >= ground - max(2, h // 300)
-    # runs of ground contact = tyres
-    runs, start = [], None
-    for x in range(w):
-        if on_ground[x] and start is None: start = x
-        if (not on_ground[x] or x == w - 1) and start is not None:
-            runs.append((start, x)); start = None
-    runs = sorted(runs, key=lambda r: -(r[1] - r[0]))[:2]
-    runs = sorted(runs)
-    if len(runs) < 2: raise SystemExit("could not find two tyres on the ground line")
-    centres = [(r[0] + r[1]) / 2 for r in runs]
-    # tyre diameter: height of the mask directly above the contact patch until the arch opens (first gap) -> use chord: contact width ~ 0.55*D
-    widths = [r[1] - r[0] for r in runs]
-    # better: measure the tyre as the vertical extent of the foreground at the centre column that is
-    # contiguous from the ground up until the first background pixel (the arch gap) or the body
-    diam = []
-    for cx in centres:
-        col = mask[:, int(cx)]
-        y = ground
-        while y > 0 and col[y]: y -= 1
-        diam.append(ground - y)
-    D = float(np.median(diam))
-    return centres[0], centres[1], D / 2, ground
-
-def outline(mask: np.ndarray):
-    h, w = mask.shape
-    cols = [x for x in range(w) if mask[:, x].any()]
-    top = [(x, np.min(np.nonzero(mask[:, x])[0])) for x in cols]
-    bot = [(x, np.max(np.nonzero(mask[:, x])[0])) for x in cols]
-    return top, bot
-
-def resample(pts, n):
-    p = np.array(pts, dtype=float)
-    d = np.r_[0, np.cumsum(np.hypot(*np.diff(p, axis=0).T))]
-    t = np.linspace(0, d[-1], n)
-    return np.c_[np.interp(t, d, p[:, 0]), np.interp(t, d, p[:, 1])]
+def trace(img, L, WB, FO, tire, n=160):
+    a = np.asarray(img.convert("RGB")).astype(np.int32); h, w, _ = a.shape
+    border = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]]); bg = np.median(border, axis=0)
+    lum = a.mean(axis=2)
+    fg = largest(ndimage.binary_fill_holes(ndimage.binary_closing(np.abs(a - bg).sum(axis=2) > 45, iterations=2)))
+    # remove antenna / mirror / shadow fringes with an opening sized to the car
+    est_T = np.ptp(np.nonzero(fg.any(axis=0))[0]) / (L / tire); k = max(5, int(est_T * 0.16))
+    body = ndimage.binary_opening(fg, structure=np.ones((1, k))); body = ndimage.binary_opening(body, structure=np.ones((k // 2 + 1, 1)))
+    xs = np.nonzero(body.any(axis=0))[0]; x0, x1 = xs.min(), xs.max()
+    Tpx = (x1 - x0) / (L / tire)                                   # scale from the known length
+    fa = x0 + FO / tire * Tpx; ra = fa + WB / tire * Tpx
+    # ground: lowest dark pixel in the columns around each axle (tyre bottoms; shadows are grey, tyres are black)
+    def tyre_bottom(cx):
+        best = 0
+        for x in range(int(cx - Tpx * 0.15), int(cx + Tpx * 0.15)):
+            col = np.nonzero(fg[:, x] & (lum[:, x] < 80))[0]
+            if col.size: best = max(best, col.max())
+        return best
+    ground = float(np.mean([tyre_bottom(fa), tyre_bottom(ra)]))
+    cols = [x for x in range(w) if body[:, x].any()]
+    top = np.array([(x, np.min(np.nonzero(body[:, x])[0])) for x in cols], dtype=float)
+    top[:, 1] = ndimage.maximum_filter1d(top[:, 1], size=max(5, int(Tpx * 0.14)))   # drop upward spikes (antenna, fin)
+    top[:, 1] = ndimage.uniform_filter1d(top[:, 1], size=max(3, int(Tpx * 0.04)))
+    d = np.r_[0, np.cumsum(np.hypot(*np.diff(top, axis=0).T))]; t = np.linspace(0, d[-1], n)
+    rs = np.c_[np.interp(t, d, top[:, 0]), np.interp(t, d, top[:, 1])]
+    T = lambda v: v / Tpx
+    out = {"T_px": round(Tpx, 1), "L": round(T(x1 - x0), 4), "fa": round(T(fa - x0), 4), "ra": round(T(ra - x0), 4),
+           "H": round(T(ground - top[:, 1].min()), 4), "top": [[round(T(x - x0), 4), round(T(ground - y), 4)] for x, y in rs]}
+    return out, {"top": top, "fa": fa, "ra": ra, "ground": ground, "Tpx": Tpx}
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("image"); ap.add_argument("--name", required=True); ap.add_argument("--key", required=True)
-    ap.add_argument("--out", default=None); ap.add_argument("--preview", action="store_true"); ap.add_argument("--n", type=int, default=160)
+    ap = argparse.ArgumentParser(); ap.add_argument("image"); ap.add_argument("--key", required=True); ap.add_argument("--name", required=True)
+    for k in ("L", "WB", "FO", "tire"): ap.add_argument("--" + k, type=float, required=True)
+    ap.add_argument("--flip", action="store_true"); ap.add_argument("--out", default=None); ap.add_argument("--preview", action="store_true"); ap.add_argument("--n", type=int, default=160)
     a = ap.parse_args()
-    img = Image.open(a.image)
-    m = mask_car(img)
-    fa, ra, r, ground = wheels(m)
-    T = 2 * r
-    top, bot = outline(m)
-    x0 = top[0][0]
-    tx = lambda x: (x - x0) / T
-    ty = lambda y: (ground - y) / T
-    topT = [[round(tx(x), 4), round(ty(y), 4)] for x, y in resample(top, a.n)]
-    botT = [[round(tx(x), 4), round(ty(y), 4)] for x, y in resample(bot, a.n)]
-    out = {"key": a.key, "name": a.name, "source": Path(a.image).name, "T_px": round(T, 1),
-           "L": round(tx(top[-1][0]), 4), "fa": round(tx(fa), 4), "ra": round(tx(ra), 4), "H": round(max(p[1] for p in topT), 4),
-           "top": topT, "bottom": botT}
-    p = Path(a.out) if a.out else Path("outlines") / f"{a.key}.json"
-    p.parent.mkdir(parents=True, exist_ok=True); json.dump(out, open(p, "w"))
-    print(f"{a.name}: T={T:.0f}px  L={out['L']:.2f} T  wheelbase={out['ra']-out['fa']:.2f} T  H={out['H']:.2f} T  -> {p}")
+    im0 = Image.open(a.image)
+    if im0.mode in ("RGBA", "LA", "P"):
+        im0 = im0.convert("RGBA"); bgw = Image.new("RGBA", im0.size, (255, 255, 255, 255)); bgw.alpha_composite(im0); im0 = bgw
+    img = im0.convert("RGB")
+    if a.flip: img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    out, dbg = trace(img, a.L, a.WB, a.FO, a.tire, a.n); out.update({"key": a.key, "name": a.name, "source": Path(a.image).name, "flipped": a.flip})
+    p = Path(a.out) if a.out else Path("outlines") / f"{a.key}.json"; p.parent.mkdir(parents=True, exist_ok=True); json.dump(out, open(p, "w"))
+    print(f"{a.key:<3} {a.name:<18} T={out['T_px']:>5.0f}px  L={out['L']:.2f}  WB={out['ra']-out['fa']:.2f}  H={out['H']:.2f}")
     if a.preview:
-        from PIL import ImageDraw
-        pv = img.convert("RGB"); dr = ImageDraw.Draw(pv)
-        dr.line([tuple(map(int, q)) for q in resample(top, 400)], fill=(255, 106, 61), width=3)
-        dr.line([tuple(map(int, q)) for q in resample(bot, 400)], fill=(125, 211, 252), width=2)
-        for cx in (fa, ra): dr.ellipse([cx - r, ground - 2 * r, cx + r, ground], outline=(255, 122, 144), width=3)
-        pv.save(p.with_suffix(".preview.png")); print("preview ->", p.with_suffix('.preview.png'))
+        pv = img.copy(); dr = ImageDraw.Draw(pv); r = dbg["Tpx"] / 2
+        dr.line([tuple(map(float, q)) for q in dbg["top"]], fill=(255, 106, 61), width=3)
+        for cx in (dbg["fa"], dbg["ra"]): dr.ellipse([cx - r, dbg["ground"] - 2 * r, cx + r, dbg["ground"]], outline=(255, 122, 144), width=3)
+        dr.line([(0, dbg["ground"]), (pv.width, dbg["ground"])], fill=(125, 211, 252), width=1)
+        pv.save(p.with_suffix(".preview.png"))
 
 if __name__ == "__main__":
     main()

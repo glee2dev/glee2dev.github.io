@@ -21,9 +21,11 @@ def trace(img, L, WB, FO, tire, n=160):
     lum = a.mean(axis=2)
     fg = largest(ndimage.binary_fill_holes(ndimage.binary_closing(np.abs(a - bg).sum(axis=2) > 45, iterations=2)))
     # remove antenna / mirror / shadow fringes with an opening sized to the car
-    est_T = np.ptp(np.nonzero(fg.any(axis=0))[0]) / (L / tire); k = max(5, int(est_T * 0.16))
+    est_T = np.ptp(np.nonzero(fg.any(axis=0))[0]) / (L / tire); k = max(5, int(est_T * 0.20))
     body = ndimage.binary_opening(fg, structure=np.ones((1, k))); body = ndimage.binary_opening(body, structure=np.ones((k // 2 + 1, 1)))
-    xs = np.nonzero(body.any(axis=0))[0]; x0, x1 = xs.min(), xs.max()
+    # extent from the body above the shadow band (the lowest 8% of the car's height), so a cast shadow can't widen it
+    ys_all = np.nonzero(body.any(axis=1))[0]; cut = int(ys_all.max() - 0.08 * (ys_all.max() - ys_all.min()))
+    xs = np.nonzero(body[:cut].any(axis=0))[0]; x0, x1 = xs.min(), xs.max()
     Tpx = (x1 - x0) / (L / tire)                                   # scale from the known length
     fa = x0 + FO / tire * Tpx; ra = fa + WB / tire * Tpx
     # ground: lowest dark pixel in the columns around each axle (tyre bottoms; shadows are grey, tyres are black)
@@ -34,51 +36,35 @@ def trace(img, L, WB, FO, tire, n=160):
             if col.size: best = max(best, col.max())
         return best
     ground = float(np.mean([tyre_bottom(fa), tyre_bottom(ra)]))
-    cols = [x for x in range(w) if body[:, x].any()]
+    cols = [x for x in range(x0, x1 + 1) if body[:, x].any()]
     top = np.array([(x, np.min(np.nonzero(body[:, x])[0])) for x in cols], dtype=float)
-    top[:, 1] = ndimage.maximum_filter1d(top[:, 1], size=max(5, int(Tpx * 0.14)))   # drop upward spikes (antenna, fin)
-    top[:, 1] = ndimage.uniform_filter1d(top[:, 1], size=max(3, int(Tpx * 0.04)))
-    # landmarks from the scan (in T units, nose at 0, ground at 0), then a clean line between them
+    # the real edge, cleaned once: a small Gaussian along the line removes compression noise without moving the shape
+    top[:, 1] = ndimage.gaussian_filter1d(top[:, 1], sigma=max(1.0, Tpx * 0.012))
     T = lambda v: v / Tpx
     X = (top[:, 0] - x0) / Tpx; Y = (ground - top[:, 1]) / Tpx
-    Y = ndimage.uniform_filter1d(Y, size=max(5, int(Tpx * 0.10)))
-    Lt = X[-1]; slope = np.gradient(Y, X)
+    Lt = X[-1]; slope = np.gradient(ndimage.uniform_filter1d(Y, size=max(5, int(Tpx * 0.10))), X)
     peak = int(np.argmax(Y)); yPeak = float(Y[peak])
     def first(cond, lo, hi):
         idx = np.nonzero(cond & (X >= lo) & (X <= hi))[0]; return int(idx[0]) if idx.size else None
-    # A-pillar: first sustained steep rise before the peak; cowl = its start, roofStart = its end
     steep = slope > np.tan(np.radians(22))
-    ia = first(steep, 0.9, X[peak]); ia = ia if ia is not None else int(np.argmax(slope[:peak]))
-    cowl = ia
+    ia = first(steep, 0.9, X[peak]); ia = ia if ia is not None else int(np.argmax(slope[:peak])); cowl = ia
     ir = ia
     while ir < peak and slope[ir] > np.tan(np.radians(10)): ir += 1
     roofStart = ir
-    # roof end: after the peak, first sustained fall
     fall = slope < -np.tan(np.radians(9))
-    ie = first(fall, X[peak] + 0.15, Lt - 0.15); ie = ie if ie is not None else min(len(X) - 2, peak + 5)
-    roofEnd = ie
-    # deck: after the fall, slope flattens again before the tail (notch / pickup bed); else fastback / tailgate
+    ie = first(fall, X[peak] + 0.15, Lt - 0.15); ie = ie if ie is not None else min(len(X) - 2, peak + 5); roofEnd = ie
     idk = ie
     while idk < len(X) - 1 and slope[idk] < -np.tan(np.radians(8)): idk += 1
     deck = idk if X[idk] < Lt - 0.25 else None
-    hoodMid = first(X >= X[cowl] * 0.5, 0, X[cowl])
-    rearForm = 1.0 if deck is None else (0.0 if (Y[deck] < yPeak - 0.35) else 1.0)
-    K = lambda i, r: [round(float(X[i]), 3), round(float(Y[i]), 3), r]
-    rh = 0.2
-    ctrl = [[0.06, rh + 0.16, 0], [0.0, rh + 0.5, 0.14], [round(float(X[0]) + 0.02, 3), round(float(Y[0]), 3), 0.22]]
-    if hoodMid is not None and hoodMid < cowl - 3: ctrl.append(K(hoodMid, 1.2))
-    ctrl.append(K(cowl, 0.34)); ctrl.append(K(roofStart, 0.6))
-    ctrl.append([round(float((X[roofStart] + X[roofEnd]) / 2), 3), round(yPeak, 3), 2.2])
-    ctrl.append(K(roofEnd, 0.55 if deck is not None and Y[deck] < yPeak - 0.35 else 0.22))
-    if deck is not None: ctrl.append(K(deck, 0.5))
-    tailTop = len(X) - 1
-    ctrl.append([round(float(X[tailTop]) - 0.02, 3), round(float(Y[tailTop]), 3), 0.14])
-    ctrl.append([round(float(Lt), 3), round(float(Y[tailTop]) - 0.2, 3), 0.10]); ctrl.append([round(float(Lt) - 0.08, 3), rh + 0.3, 0.12]); ctrl.append([round(float(Lt) - 0.12, 3), rh + 0.16, 0])
-    landmarks = {"cowl": K(cowl, 0)[:2], "roofStart": K(roofStart, 0)[:2], "peak": [round(float(X[peak]), 3), round(yPeak, 3)], "roofEnd": K(roofEnd, 0)[:2], "deck": (K(deck, 0)[:2] if deck is not None else None), "rearForm": rearForm}
-    rs = None
+    K = lambda i: [round(float(X[i]), 3), round(float(Y[i]), 3)]
+    landmarks = {"cowl": K(cowl), "roofStart": K(roofStart), "peak": [round(float(X[peak]), 3), round(yPeak, 3)], "roofEnd": K(roofEnd), "deck": (K(deck) if deck is not None else None),
+                 "rearForm": 1.0 if deck is None else (0.0 if (Y[deck] < yPeak - 0.35) else 1.0)}
+    # the outline itself: the cleaned edge, resampled by arc length
+    d = np.r_[0, np.cumsum(np.hypot(np.diff(X), np.diff(Y)))]; t = np.linspace(0, d[-1], n)
+    rs = np.c_[np.interp(t, d, X), np.interp(t, d, Y)]
     T = lambda v: v / Tpx
     out = {"T_px": round(Tpx, 1), "L": round(T(x1 - x0), 4), "fa": round(T(fa - x0), 4), "ra": round(T(ra - x0), 4),
-           "H": round(float(yPeak), 4), "ctrl": ctrl, "landmarks": landmarks}
+           "H": round(float(yPeak), 4), "top": [[round(float(x), 4), round(float(y), 4)] for x, y in rs], "landmarks": landmarks}
     return out, {"top": top, "fa": fa, "ra": ra, "ground": ground, "Tpx": Tpx}
 
 def main():
@@ -93,7 +79,7 @@ def main():
     if a.flip: img = img.transpose(Image.FLIP_LEFT_RIGHT)
     out, dbg = trace(img, a.L, a.WB, a.FO, a.tire, a.n); out.update({"key": a.key, "name": a.name, "source": Path(a.image).name, "flipped": a.flip})
     p = Path(a.out) if a.out else Path("outlines") / f"{a.key}.json"; p.parent.mkdir(parents=True, exist_ok=True); json.dump(out, open(p, "w"))
-    lm = out["landmarks"]; print(f"{a.key:<3} {a.name:<18} L={out['L']:.2f} H={out['H']:.2f} cowl={lm['cowl'][0]:.2f} roof={lm['roofStart'][0]:.2f}-{lm['roofEnd'][0]:.2f} deck={lm['deck'][0] if lm['deck'] else '-'} rf={lm['rearForm']}")
+    lm = out["landmarks"]; print(f"{a.key:<3} {a.name:<18} L={out['L']:.2f} H={out['H']:.2f} cowl={lm['cowl'][0]:.2f} roof={lm['roofStart'][0]:.2f}-{lm['roofEnd'][0]:.2f}")
     if a.preview:
         pv = img.copy(); dr = ImageDraw.Draw(pv); r = dbg["Tpx"] / 2
         dr.line([tuple(map(float, q)) for q in dbg["top"]], fill=(255, 106, 61), width=2)

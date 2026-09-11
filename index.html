@@ -131,14 +131,14 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
     <div>
       <p class="when">2026 · LIVE</p>
       <h3><a href="https://glee2dev.github.io/vehicle-intelligence/">Who did the math?</a></h3>
-      <p>When an LLM does the analysis, it invents the numbers. When it only narrates numbers you computed, it doesn't. Ten questions on a synthetic 10,000-household vehicle panel, three ways of answering, same model, every number checked. The naive-grounded model read individual records perfectly and got every aggregate wrong.</p>
+      <p>When an LLM does the analysis, it invents the numbers. When it only narrates numbers you computed, it doesn't. Ten questions on a synthetic 10,000-household vehicle panel, three ways of answering, every number checked — eight runs across five labs. The naive-grounded model read individual records perfectly and got every aggregate wrong. The same model run twice moved more than two different labs did.</p>
       <div class="meta"><a href="https://glee2dev.github.io/vehicle-intelligence/">Interactive page</a><a href="https://github.com/glee2dev/vehicle-intelligence">Repo — every prompt and answer committed</a></div>
     </div>
     <figure class="bars">
-      <div class="bar bad"><span>Ungrounded</span><div class="track"><div class="fill" style="--w:33%"></div></div><b>33%</b></div>
-      <div class="bar der"><span>Naive-grounded</span><div class="track"><div class="fill" style="--w:64%"></div></div><b>64%</b></div>
-      <div class="bar ok"><span>Pipeline-grounded</span><div class="track"><div class="fill" style="--w:99.5%"></div></div><b>99.5%</b></div>
-      <figcaption>Share of stated numbers that survive verification, ten questions, Claude Sonnet 5.</figcaption>
+      <div class="bar bad"><span>Ungrounded</span><div class="track"><div class="fill" style="--w:50%"></div></div><b>50%</b></div>
+      <div class="bar der"><span>Naive-grounded</span><div class="track"><div class="fill" style="--w:61%"></div></div><b>61%</b></div>
+      <div class="bar ok"><span>Pipeline-grounded</span><div class="track"><div class="fill" style="--w:99.7%"></div></div><b>99.7%</b></div>
+      <figcaption>Share of stated numbers that match the data. Ten questions, eight runs, six model configurations, 2,600 numbers checked.</figcaption>
     </figure>
   </article>
 

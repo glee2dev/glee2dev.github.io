@@ -49,11 +49,16 @@ p{max-width:var(--prose)}
 .card .meta .soon{color:var(--muted)}
 .card figure{margin:0;border:1px solid var(--rule);background:var(--dark2);padding:18px 20px}
 .card figure svg{width:100%;height:auto;display:block}
-.bars{display:grid;gap:12px}
-.bar{display:grid;grid-template-columns:120px 1fr 58px;align-items:center;gap:12px;font-size:14px}
-.bar .track{height:14px;background:#241A16;position:relative} .bar .fill{position:absolute;inset:0 auto 0 0;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
-.in .bar .fill{width:var(--w)} .bar b{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
-.bar.ok .fill{background:var(--ok)} .bar.der .fill{background:var(--der)} .bar.bad .fill{background:var(--bad)}
+.bars{display:grid;gap:16px;padding:4px 0 2px}
+.bar{display:grid;grid-template-columns:132px 1fr 56px;align-items:center;gap:14px;font:12px/1 "IBM Plex Mono",monospace;letter-spacing:.04em}
+.bar>span{color:var(--muted)}
+/* a scale, not a block: 1px datum, ticks every 25%, the reading is a stroke with a needle at its tip */
+.bar .track{position:relative;height:14px;background:linear-gradient(90deg,var(--rule) 1px,transparent 1px) 0 2px/25% 10px repeat-x;border-right:1px solid var(--rule)}
+.bar .track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--rule)} .bar .fill{position:absolute;left:0;top:50%;height:2px;margin-top:-1px;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.bar .fill::after{content:"";position:absolute;right:-1px;top:-5px;width:1.5px;height:12px;background:inherit}
+.in .bar .fill{width:var(--w)} .bar b{text-align:right;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+/* same rule as the match dial: flame is the headline reading, the other modes are ghosts */
+.bar.ok .fill{background:var(--flame)} .bar.ok b{color:var(--flame)} .bar.der .fill{background:var(--ink);opacity:.45} .bar.bad .fill{background:var(--ink);opacity:.45}
 .bars figcaption{font-size:13px;color:var(--muted);margin-top:8px}
 @media (max-width:820px){.card{grid-template-columns:1fr;gap:22px}}
 
@@ -184,7 +189,7 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
       <div class="bar bad"><span>Ungrounded</span><div class="track"><div class="fill" style="--w:50%"></div></div><b>50%</b></div>
       <div class="bar der"><span>Naive-grounded</span><div class="track"><div class="fill" style="--w:61%"></div></div><b>61%</b></div>
       <div class="bar ok"><span>Pipeline-grounded</span><div class="track"><div class="fill" style="--w:99.7%"></div></div><b>99.7%</b></div>
-      <figcaption>Share of stated numbers that match the data. Ten questions, eight runs, six model configurations, 2,600 numbers checked.</figcaption>
+      <figcaption>Share of stated numbers that match the data. Ten questions, eight runs, six model configurations, 1,719 numbers checked.</figcaption>
     </figure>
   </article>
 

@@ -7,10 +7,12 @@
 <meta name="description" content="Gyunpyo Lee (이건표). Data scientist and AI engineer with an automotive design background. Arguments with evidence: builds that test a claim and measure the result.">
 <link rel="canonical" href="https://gyunpyolee.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Gyunpyo Lee","alternateName":["이건표","Gun Lee"],"url":"https://gyunpyolee.com","jobTitle":"Senior Data Scientist and AI Engineer","sameAs":["https://github.com/glee2dev"]}</script>
 <style>
-:root{--bg:#F3F4F1;--ink:#1C2024;--muted:#6F767D;--rule:#D6D9D4;--dark:#0D0908;--dark2:#130E0C;--on-dark:#F1ECE8;--on-dark-muted:#9A8F88;--light:#FF3B2F;--light2:#FFD2A8;--flame:#D8452A;--ok:#1E7A4C;--der:#2E5AAC;--bad:#B4271F;--prose:66ch}
+:root{--bg:#0D0908;--ink:#F1ECE8;--muted:#9A8F88;--rule:#2A2422;--dark:#0D0908;--dark2:#141010;--on-dark:#F1ECE8;--on-dark-muted:#9A8F88;--light:#FF3B2F;--light2:#FFD2A8;--flame:#FF3B2F;--ok:#52C48A;--der:#6E9EE8;--bad:#E8635A;--prose:66ch
+  --dim:var(--on-dark-muted); --ghost:#3F3E3A; --acc:var(--flame); --acc2:var(--light2);
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -18,16 +20,8 @@ a{color:inherit;text-decoration:none}
 .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
 
 /* ── hero: dark, one light gesture ─────────────────────────────────────── */
-.hero{background:var(--dark);color:var(--on-dark);position:relative;overflow:hidden;min-height:min(92vh,760px);display:flex;align-items:flex-end}
-.hero .wrap{position:relative;z-index:2;padding-top:64px;padding-bottom:56px;width:100%}
-.hero svg.form{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
-.hero h1{font-size:clamp(40px,7.2vw,96px);font-weight:600;letter-spacing:-.035em;line-height:.95;margin:0}
-.hero .kr{font-size:clamp(15px,1.5vw,18px);color:var(--on-dark-muted);margin:14px 0 0;letter-spacing:.02em}
-.hero .lede{font-size:clamp(19px,2.2vw,26px);max-width:30ch;margin:34px 0 0;line-height:1.3;font-weight:400}
-.hero .lede b{font-weight:600;color:#FFB08A}
-.hero .top{position:absolute;left:0;right:0;top:0;padding:22px clamp(18px,4vw,44px);display:flex;justify-content:space-between;font-size:14px;color:var(--on-dark-muted);z-index:3}
-.hero .top a{margin-left:22px} .hero .top a:hover{color:#fff}
-@media (max-width:640px){.hero{min-height:0;height:64vh;max-height:560px} .hero .wrap{padding-bottom:36px} .hero h1{font-size:clamp(38px,12vw,52px)} .hero .kr{font-size:14px} .hero .lede{font-size:18px;margin-top:22px} .hero .wrap{padding-bottom:36px} .hero .lede{margin-top:20px} .hero .kr{font-size:14px} .hero .top span:first-child{display:none}}
+.hero{background:var(--dark);color:var(--on-dark)}
+@media (max-width:640px){ .hero .top span:first-child{display:none}}
 
 /* ── principles ────────────────────────────────────────────────────────── */
 .principles{background:var(--dark2);color:var(--on-dark);padding:34px 0 40px;border-top:1px solid #241A16}
@@ -53,21 +47,21 @@ p{max-width:var(--prose)}
 .card p{margin:0 0 14px}
 .card .meta{font-size:15px;display:flex;flex-wrap:wrap;gap:8px 22px} .card .meta a{border-bottom:1px solid var(--rule)} .card .meta a:hover{border-color:var(--ink)}
 .card .meta .soon{color:var(--muted)}
-.card figure{margin:0;border:1px solid var(--rule);background:#fff;padding:18px 20px}
+.card figure{margin:0;border:1px solid var(--rule);background:var(--dark2);padding:18px 20px}
 .card figure svg{width:100%;height:auto;display:block}
 .bars{display:grid;gap:12px}
 .bar{display:grid;grid-template-columns:120px 1fr 58px;align-items:center;gap:12px;font-size:14px}
-.bar .track{height:14px;background:#EEF0EC;position:relative} .bar .fill{position:absolute;inset:0 auto 0 0;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.bar .track{height:14px;background:#241A16;position:relative} .bar .fill{position:absolute;inset:0 auto 0 0;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
 .in .bar .fill{width:var(--w)} .bar b{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 .bar.ok .fill{background:var(--ok)} .bar.der .fill{background:var(--der)} .bar.bad .fill{background:var(--bad)}
 .bars figcaption{font-size:13px;color:var(--muted);margin-top:8px}
 @media (max-width:820px){.card{grid-template-columns:1fr;gap:22px}}
 
 .vgrid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start}
-.vgrid textarea{width:100%;font:inherit;font-size:16px;line-height:1.5;padding:12px 14px;border:1px solid var(--rule);background:#fff;resize:vertical;color:var(--ink)} .vgrid textarea:focus{outline:2px solid var(--flame);outline-offset:2px;border-color:transparent}
+.vgrid textarea{width:100%;font:inherit;font-size:16px;line-height:1.5;padding:12px 14px;border:1px solid var(--rule);background:var(--dark2);resize:vertical;color:var(--ink)} .vgrid textarea:focus{outline:2px solid var(--flame);outline-offset:2px;border-color:transparent}
 .vout{margin-top:12px;font-size:16px;line-height:1.6;min-height:3.2em} .vsum{font-size:14px;color:var(--muted);margin-top:8px}
-.vout mark{padding:0 .18em;border-radius:3px;font-weight:600} .vout mark.ok{background:#DDF0E4;color:var(--ok)} .vout mark.der{background:#DCE5F5;color:var(--der)} .vout mark.bad{background:#F6DCD9;color:var(--bad)} .vout u{text-decoration:none;background:#F5EBD0;color:#8A5A00;padding:0 .15em;border-radius:3px}
-.vstats{margin:8px 0 0;font-size:12.5px;line-height:1.5;background:#fff;border:1px solid var(--rule);padding:12px 14px;white-space:pre-wrap;color:var(--muted)}
+.vout mark{padding:0 .18em;border-radius:3px;font-weight:600} .vout mark.ok{background:rgba(82,196,138,.18);color:var(--ok)} .vout mark.der{background:rgba(110,158,232,.18);color:var(--der)} .vout mark.bad{background:rgba(232,99,90,.18);color:var(--bad)} .vout u{text-decoration:none;background:rgba(242,192,105,.18);color:#F2C069;padding:0 .15em;border-radius:3px}
+.vstats{margin:8px 0 0;font-size:12.5px;line-height:1.5;background:var(--dark2);border:1px solid var(--rule);padding:12px 14px;white-space:pre-wrap;color:var(--muted)}
 .vdet summary{font-size:14px;color:var(--muted);cursor:pointer}
 @media (max-width:820px){.vgrid{grid-template-columns:1fr} .principles{padding:26px 0 30px} section.light{padding-top:52px} .card{padding:26px 0}}
 .next{padding:48px 0 0}
@@ -84,32 +78,86 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 .rv{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease} .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none} .principles .p::before{transform:scaleX(1);transition:none} .bar .fill{transition:none;width:var(--w)} html{scroll-behavior:auto}}
 :focus-visible{outline:2px solid var(--flame);outline-offset:3px}
-@media (max-width:640px){.hero svg.form{transform:translateY(-14%) scale(1.15);transform-origin:50% 40%}}
+@media (max-width:640px){}
+
+/* ── instrument cluster hero ─────────────────────────────── */
+.hero{position:relative;height:100vh;min-height:680px;max-height:940px;overflow:hidden;perspective:1400px;perspective-origin:50% 45%}
+.hero .grid{position:absolute;inset:0;pointer-events:none}
+.hero .stage{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.hero .dial{position:absolute;transform-style:preserve-3d;cursor:pointer;opacity:0;outline:none}
+.hero .dial.inert{cursor:default}
+.hero .dial svg{width:100%;height:100%;display:block;overflow:visible}
+.hero .tick{opacity:0}
+.hero .dial .lab, .hero .dial .sub{opacity:0}
+.hero .dial .sub{margin:0;max-width:none;position:absolute;left:50%;bottom:-50px;transform:translateX(-50%);font:11px/1.2 'IBM Plex Mono',monospace;color:var(--ghost);letter-spacing:.06em;white-space:nowrap;transition:color .2s}
+.hero .dial .lab{position:absolute;left:50%;bottom:-32px;transform:translateX(-50%);font:12px/1.2 "IBM Plex Mono",monospace;color:var(--dim);letter-spacing:.08em;white-space:nowrap}
+.hero .dial .val{position:absolute;left:50%;top:58%;transform:translateX(-50%);font:500 22px/1 "IBM Plex Mono",monospace;color:var(--ink);letter-spacing:-.02em;white-space:nowrap}
+.hero .dial[data-id=years] .val{top:60%;font-size:34px}
+.hero .dial:hover circle.ring, .hero .dial:focus-visible circle.ring{stroke:var(--acc2)}
+.hero .dial:focus-visible circle.focusring{stroke:var(--acc);stroke-opacity:.9}
+.hero .dial:hover .sub, .hero .dial:focus-visible .sub{color:var(--dim)}
+.hero .seg{cursor:pointer}
+.hero .needle.s, .hero .fill{filter:drop-shadow(0 0 5px rgba(255,59,47,.32))}
+.hero .name{position:absolute;left:clamp(18px,4vw,48px);bottom:clamp(28px,6vh,64px);z-index:3}
+.hero .name h1{font-size:clamp(38px,5.2vw,72px);font-weight:600;letter-spacing:-.035em;line-height:.95;margin:0;overflow:hidden;white-space:nowrap}
+.hero .name h1 span{display:inline-block;opacity:0;transform:translateY(60%)}
+.hero .name .kr{max-width:34ch;font:400 14px/1.5 "IBM Plex Mono",monospace;color:var(--dim);margin:12px 0 0;letter-spacing:.02em;opacity:0}
+.hero .name .lede{font-size:clamp(17px,1.8vw,22px);max-width:30ch;margin:20px 0 0;line-height:1.3;opacity:0}
+.hero .name .lede b{color:var(--acc2);font-weight:600}
+.hero .top{position:absolute;left:0;right:0;top:0;padding:20px clamp(18px,4vw,48px);display:flex;justify-content:space-between;font:12px/1 "IBM Plex Mono",monospace;color:var(--dim);letter-spacing:.06em;z-index:3}
+.hero .top a{color:inherit;text-decoration:none;margin-left:22px}
+.hero .top a:hover, .hero .top a:focus-visible{color:var(--ink)}
+.hero .legend{opacity:0;position:absolute;left:50%;transform:translateX(-50%);top:0;display:flex;gap:20px;justify-content:center;font:11px/1 'IBM Plex Mono',monospace;color:var(--dim);letter-spacing:.06em;z-index:3;white-space:nowrap}
+.hero .legend.side{left:auto;right:clamp(18px,4vw,48px);transform:none;flex-direction:column;align-items:flex-end;gap:7px}
+.hero .legend i{display:inline-block;width:16px;height:2px;margin-right:7px;vertical-align:2px;opacity:0;transform-origin:left}
+.hero .legend em{font-style:normal;color:var(--ghost)}
+.hero .readout{position:absolute;right:clamp(18px,4vw,48px);bottom:clamp(28px,6vh,64px);font:12px/1.7 "IBM Plex Mono",monospace;color:var(--dim);text-align:right;z-index:3;opacity:0}
+.hero .readout b{color:var(--ink);font-weight:500}
+@media (max-width:760px){
+.hero{height:auto;min-height:0;max-height:none;padding-bottom:24px;display:flex;flex-direction:column}
+.hero .top{order:1}
+.hero .stage{order:2}
+.hero .legend{order:3}
+.hero .name{order:4}
+.hero .readout{order:5}
+.hero .stage{position:relative;height:var(--stage-h,460px);flex:none}
+.hero .legend{position:relative;left:auto;top:auto;transform:none;flex-wrap:wrap;white-space:normal;gap:10px 18px;padding:6px 18px 0;justify-content:flex-start}
+.hero .top{position:relative;padding:14px 18px;font-size:11px;flex-direction:column;gap:8px}
+.hero .top a{margin:0 14px 0 0}
+.hero .micro{display:none}
+.hero .grid{top:76px;height:var(--stage-h,460px)}
+.hero .dial .lab{font-size:10px;bottom:-18px;letter-spacing:.06em}
+.hero .dial .sub{display:none}
+.hero .dial .val{font-size:16px}
+.hero .dial[data-id=years] .val{font-size:22px}
+.hero .name{position:relative;left:auto;bottom:auto;max-width:none;padding:0 18px;margin-top:30px}
+.hero .readout{position:relative;right:auto;bottom:auto;text-align:left;padding:20px 18px 0;font-size:11px}
+}
+.hero.glow .fill{filter:drop-shadow(0 0 6px rgba(255,59,47,.5))}
+.hero.glow .arc{filter:drop-shadow(0 0 5px currentColor)}
+.hero.glow .lamp{filter:drop-shadow(0 0 8px rgba(255,59,47,.7))}
+.hero.glow .needle.hot{filter:drop-shadow(0 0 5px rgba(255,59,47,.65))}
+.hero.glow .paper.first{filter:drop-shadow(0 0 5px rgba(255,59,47,.7))}
+.hero.glow .seg:hover .block, .hero.glow .block.sel{filter:drop-shadow(0 0 6px rgba(255,59,47,.7))}
+.hero.glow .dial[data-id=years] circle.ring{stroke-width:1.5}
+@media (prefers-reduced-motion:reduce){
+.hero .dial, .hero .name h1 span, .hero .name .kr, .hero .name .lede, .hero .readout, .hero .legend i{opacity:1!important;transform:none!important}
+}
 </style>
 </head>
 <body>
 
 <header class="hero" id="top">
-  <div class="top"><span>Gyunpyo Lee</span><span><a href="#arguments">Arguments</a><a href="#next">Next</a><a href="https://glee2dev.github.io/gplee-resume/">Résumé</a><a href="https://github.com/glee2dev">GitHub</a></span></div>
-  <!-- one continuous light stroke describing a form; drawn on load -->
-  <svg class="form" id="v" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-<defs>
-<linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#FF3B2F" stop-opacity=".5"/><stop offset=".1" stop-color="#FF3B2F"/><stop offset=".5" stop-color="#FF8C5A"/><stop offset=".72" stop-color="#FFD2A8"/><stop offset=".85" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".5"/></linearGradient>
-<filter id="soft" x="-20%" y="-80%" width="140%" height="260%"><feGaussianBlur stdDeviation="16"/></filter>
-<filter id="glow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-</defs>
-<g id="form" transform="translate(0,-150)">
-  <g id="strokes" fill="none" stroke="#C9A79B" stroke-width="1.2" stroke-linecap="round"></g>
-  <path id="halo" fill="none" stroke="#FF5A3C" stroke-width="14" stroke-opacity=".28" stroke-linecap="round" filter="url(#soft)"/>
-  <path id="line" fill="none" stroke="url(#lg)" stroke-width="3.6" stroke-linecap="round" filter="url(#glow)"/>
-  <path id="core" fill="none" stroke="#FFF4EC" stroke-width="1.2" stroke-opacity=".9" stroke-linecap="round"/>
-</g>
-</svg>
-  <div class="wrap">
-    <h1>Gyunpyo Lee</h1>
-    <p class="kr">이건표 · Seoul · data scientist and AI engineer, trained as a car designer</p>
-    <p class="lede">I design AI products and <b>measure whether they work</b>.</p>
+  <div class="top"><span>Gyunpyo Lee</span><span><a href="#arguments">Arguments</a><a href="#next">Next</a><a href="/gplee-resume/">Résumé</a><a href="https://github.com/glee2dev">GitHub</a></span></div>
+<svg class="grid" id="grid" aria-hidden="true"></svg>
+  <div class="stage" id="stage"></div>
+  <div class="name">
+    <h1 id="h1"></h1>
+    <p class="kr" id="kr">이건표 · Seoul · data scientist and AI engineer, trained as a car designer</p>
+    <p class="lede" id="lede">I design AI products and <b>measure whether they work</b>.</p>
   </div>
+  <div class="readout" id="readout"></div>
+  <div class="legend" id="legend"></div>
 </header>
 
 <section class="principles rv" id="how">
@@ -129,9 +177,9 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
   <article class="card first rv">
     <div>
       <p class="when">2026 · LIVE</p>
-      <h3><a href="https://glee2dev.github.io/vehicle-intelligence/">Who did the math?</a></h3>
+      <h3><a href="/vehicle-intelligence/">Who did the math?</a></h3>
       <p>When an LLM does the analysis, it invents the numbers. When it only narrates numbers you computed, it doesn't. Ten questions on a synthetic 10,000-household vehicle panel, three ways of answering, every number checked — eight runs across five labs. The naive-grounded model read individual records perfectly and got every aggregate wrong. The same model run twice moved more than two different labs did.</p>
-      <div class="meta"><a href="https://glee2dev.github.io/vehicle-intelligence/">Interactive page</a><a href="https://github.com/glee2dev/vehicle-intelligence">Repo — every prompt and answer committed</a></div>
+      <div class="meta"><a href="/vehicle-intelligence/">Interactive page</a><a href="https://github.com/glee2dev/vehicle-intelligence">Repo — every prompt and answer committed</a></div>
     </div>
     <figure class="bars">
       <div class="bar bad"><span>Ungrounded</span><div class="track"><div class="fill" style="--w:50%"></div></div><b>50%</b></div>
@@ -151,12 +199,12 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
     <figure>
       <a href="/proportion/" style="display:block;border:0">
       <svg viewBox="0 0 520 200" aria-label="Car side profile with GP22 feature boxes">
-        <g fill="none" stroke="#1C2024" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <g fill="none" stroke="#F1ECE8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M40 132 L48 132 L52 118 L120 110 L160 72 L300 66 L372 84 L432 108 L470 118 L474 132 L40 132 Z"/>
           <circle cx="112" cy="132" r="22"/><circle cx="392" cy="132" r="22"/>
         </g>
         <g fill="none" stroke="#FF6A3D" stroke-width="1" stroke-dasharray="4 3"><rect x="40" y="66" width="434" height="66"/><rect x="160" y="66" width="272" height="42"/><rect x="90" y="110" width="324" height="22"/></g>
-        <g fill="#6F767D" font-family="IBM Plex Sans,sans-serif" font-size="11"><text x="42" y="60">BODY</text><text x="162" y="60">CABIN</text><text x="40" y="180">every length in tire diameters · open the tool →</text></g>
+        <g fill="#9A8F88" font-family="IBM Plex Sans,sans-serif" font-size="11"><text x="42" y="60">BODY</text><text x="162" y="60">CABIN</text><text x="40" y="180">every length in tire diameters · open the tool →</text></g>
       </svg></a>
     </figure>
   </article>
@@ -183,7 +231,7 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
   <h2 class="rv" style="font-size:22px">Elsewhere</h2>
   <div class="links rv">
     <a href="https://github.com/glee2dev">GitHub · glee2dev</a>
-    <a href="https://glee2dev.github.io/gplee-resume/">Résumé</a>
+    <a href="/gplee-resume/">Résumé</a>
     <a href="https://www.linkedin.com/in/gple2/">LinkedIn</a>
     <a href="mailto:gyunpyolee@gmail.com">gyunpyolee@gmail.com</a>
   </div>
@@ -191,51 +239,7 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 </div></section>
 
 <script>
-const NS='http://www.w3.org/2000/svg', $id=id=>document.getElementById(id);
-// the line: a short nose drop, hood rising to the cowl, fast screen, a long low greenhouse peaking over the front seats,
-// long deck falling over the haunch, and a kamm drop at the tail. Starts and ends with intent; nothing underneath.
-const TOP=[
-  -320,478,                           // enters from beyond the left edge, at hood height
-  -120,476,120,470,320,462,           // lead-in, a slow rise
-  420,456,470,452,516,446,            // hood to cowl
-  610,432,690,354,760,342,            // screen, eased into the roof
-  820,334,900,334,1000,346,           // long low roof
-  1170,366,1300,404,1400,446,         // deck over the haunch
-  1520,482,1700,504,1960,512];        // runs out beyond the right edge
-const toD=v=>{let d=`M ${v[0]} ${v[1]}`;for(let i=2;i<v.length;i+=6)d+=` C ${v.slice(i,i+6).join(' ')}`;return d;};
-const CX=814, CY=430; let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647-.5;
-
-const N=14, strokes=[], g=$id('strokes');
-for(let k=0;k<N;k++){
-  const ang=rnd()*0.7, sc=1+rnd()*0.4, dx=rnd()*400, dy=rnd()*360, bend=rnd()*320, c=Math.cos(ang), s=Math.sin(ang), start=[];
-  for(let i=0;i<TOP.length;i+=2){ let x=TOP[i]-CX, y=TOP[i+1]-CY; y+=bend*Math.sin((x/1700)*Math.PI); start.push((x*c-y*s)*sc+CX+dx+rnd()*14,(x*s+y*c)*sc+CY+dy+rnd()*14); }
-  const p=document.createElementNS(NS,'path'); p.setAttribute('d',toD(start)); p.setAttribute('stroke-opacity','0'); p.setAttribute('pathLength','1'); p.setAttribute('stroke-dasharray','1'); p.setAttribute('stroke-dashoffset','1');
-  g.appendChild(p); strokes.push({p,start,delay:k*100,dur:2200+rnd()*500});
-}
-const D=toD(TOP); for(const id of ['halo','line','core']){ const e=$id(id); e.setAttribute('d',D); e.style.opacity=0; }
-
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(reduce){ g.remove(); for(const id of ['halo','line','core']) $id(id).style.opacity=1; }
-else{
-  const ease=t=>1-Math.pow(1-t,3), T0=performance.now()+300, MSTART=1300;
-  strokes.forEach(({p,delay})=>{ p.style.transition='stroke-dashoffset 1.2s ease-out, stroke-opacity .5s ease'; setTimeout(()=>{p.style.strokeDashoffset=0;p.setAttribute('stroke-opacity','.30');},delay); });
-  function frame(now){
-    const t=now-T0; let done=true;
-    for(const st of strokes){
-      let u=(t-MSTART-st.delay)/st.dur; if(u<0){done=false;continue;} if(u>1)u=1; else done=false;
-      const e=ease(u), v=new Array(TOP.length); for(let i=0;i<TOP.length;i++) v[i]=st.start[i]+(TOP[i]-st.start[i])*e;
-      st.p.setAttribute('d',toD(v)); st.p.setAttribute('stroke-opacity',(0.30+0.5*e).toFixed(3));
-    }
-    const lu=Math.max(0,Math.min(1,(t-MSTART-2100)/1500));                        // the refined line arrives as they agree
-    for(const id of ['halo','line','core']) $id(id).style.opacity=lu;
-    if(lu>0) strokes.forEach(st=>st.p.setAttribute('stroke-opacity',(0.8*(1-lu)).toFixed(3)));   // and the strokes are gone
-    if(!done||lu<1) requestAnimationFrame(frame); else g.remove();
-  }
-  requestAnimationFrame(frame);
-  const lg=$id('lg'); addEventListener('pointermove',e=>{lg.setAttribute('gradientTransform',`translate(${((e.clientX/innerWidth-.5)*.7).toFixed(3)} 0)`);},{passive:true});
-}
-
-// ── mini verifier ───────────────────────────────────────────────────────
+// the hero line-drawing was replaced by the instrument cluster; its animation lived here
 const STATS={cohort_2plus_job_changes:{n_households:6251,n_ev:1817,share_pct:29.1},cohort_no_job_changes:{n_households:714,n_ev:120,share_pct:16.8},population:{n_households:10000,ever_ev_pct:26.9}};
 document.getElementById('vstats').textContent=JSON.stringify(STATS,null,1); if(innerWidth>820) document.getElementById('vwrap').open=true;
 const truth=[];(function fl(o,p){for(const [k,v] of Object.entries(o)){if(typeof v==='object')fl(v,p+k+'.');else truth.push({p:p+k,v,kind:/pct/.test(k)?'pct':'count'});}})(STATS,'');
@@ -259,5 +263,462 @@ const io = new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ 
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4eaf538478084ce8b6d2966abefdac25"}'></script>
+<script src="/vendor/anime.umd.min.js"></script>  <!-- vendored: the hero must not depend on a third-party CDN being up -->
+<script>(function(){
+const {animate, createTimeline, stagger, utils} = anime;
+const NS='http://www.w3.org/2000/svg', el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const hero=document.querySelector('.hero'), stage=document.getElementById('stage'), grid=document.getElementById('grid');
+const W=()=>hero.clientWidth, H=()=>hero.clientHeight;
+const RAD=Math.PI/180;
+
+/* ═══ DATA — every number on this page is edited here and nowhere else ═══════
+   Change a figure once; the instruments re-read it. Nothing below is inlined. */
+
+const d0=new Date(), NOW=d0.getFullYear()+(d0.getMonth()+d0.getDate()/30.4)/12;
+
+const PHASES=[                                    /* Indiana University is deliberately not here: 2 years, left before graduating */
+  /* cool = drawing, warm = data. The hue flip at 2020 is the pivot the sub-label claims. */
+  {id:'ccs',   place:'CCS Detroit', what:'transportation design',   from:2011.7, to:2015.4, col:'#3A6BA8'},
+  {id:'turin', place:'Changan Turin',what:'exterior design',from:2016.1, to:2019.9, col:'#7FB8FF'},
+  {id:'kaist', place:'KAIST Daejeon',what:'design + deep learning',  from:2020.6, to:2022.6, col:'#F2C069'},
+  {id:'seoul', place:'LG Seoul',    what:'data science and AI', from:2022.5, to:NOW,    col:'#FF3B2F'},
+];
+const SPAN={from:PHASES[0].from,to:NOW};
+const Y_TOTAL=NOW-SPAN.from, Y_DESIGN=2019.9-2011.7, Y_DATA=NOW-2020.6;
+
+const PAPERS={total:12, sub:'one first author · CVPRW 2022',
+  firstAuthorAt:2,        /* tick index only — the ring is unordered, it marks which one, not when */
+  firstAuthor:'GP22, CVPRW 2022'};
+
+/* eval/aggregate.json in glee2dev/vehicle-intelligence, as of 2026-09.
+   Unit is a whole answer, not a numeric claim: a trial passes only if every number in the
+   answer checked out against ground truth. 10 questions × 8 runs across 6 models. */
+const MATCH={as_of:'2026-09', questions:10, runs:8, models:6, headline:'pipeline_grounded',
+  modes:[
+    {id:'ungrounded',        label:'model alone',           passed:34},
+    {id:'naive_grounded',    label:'raw records in context',passed:13},
+    {id:'pipeline_grounded', label:'pipeline',              passed:77},
+  ]};
+MATCH.trials=MATCH.questions*MATCH.runs;
+const M_HEAD=MATCH.modes.find(m=>m.id===MATCH.headline);
+const M_GHOSTS=MATCH.modes.filter(m=>m.id!==MATCH.headline);
+const mpct=m=>m.passed/MATCH.trials*100;
+
+const GP22={profiles:1480, brands:37, venue:'CVPRW 2022'};   /* the dataset — published, first author, on Zenodo */
+const SEGMENTS=[                  /* GP22's ten segments. The cars are what the /proportion/ tool draws for each */
+  {code:'A',name:'city',      cars:['Fiat 500']},
+  {code:'B',name:'supermini', cars:['Polo hatch','Polo sedan']},
+  {code:'C',name:'compact',   cars:['Golf hatch','Elantra sedan']},
+  {code:'D',name:'mid-size',  cars:['3 Series sedan','3 Series touring']},
+  {code:'E',name:'full-size', cars:['E-Class sedan','E-Class estate']},
+  {code:'F',name:'luxury',    cars:['S-Class']},
+  {code:'J',name:'SUV',       cars:['Range Rover']},
+  {code:'S',name:'sports',    cars:['911']},
+  {code:'P',name:'pickup',    cars:['F-150']},
+  {code:'M',name:'MPV',       cars:['Carnival']},
+];
+const TRACED=SEGMENTS.reduce((n,s)=>n+s.cars.length,0);       /* 14 — the tool's presets, not the dataset */
+
+/* display order, left to right. index 2 is the centre and the largest. */
+const DIALS=[                                      /* the label names the instrument; the sub carries the detail */
+  /* href null = no destination yet, so the dial is inert rather than diving into a dead link.
+     The check is a section inside the argument, not a peer, so both land on the same page. */
+  {id:'papers',kind:'papers',label:'papers',            short:'papers',  href:'https://scholar.google.com/citations?user=QNpEBIEAAAAJ&hl=en'},
+  {id:'match', kind:'match', label:'grounded answers',  short:'grounded',href:'/vehicle-intelligence/#scoreboard'},
+  {id:'years', kind:'years', label:'years, drawing to data',short:'years',href:'/gplee-resume/'},
+  {id:'cars',  kind:'cars',  label:'side profiles',     short:'profiles',href:'/proportion/'},
+  {id:'clock', kind:'clock', label:'seoul',             short:'seoul',   href:null},
+];
+const SUBS={
+  years:()=>`design ${Y_DESIGN.toFixed(0)} yrs · data ${Y_DATA.toFixed(0)} yrs`,
+  papers:()=>PAPERS.sub,
+  match:()=>`${MATCH.questions} questions × ${MATCH.runs} runs`,
+  cars:()=>`GP22 · ${GP22.brands} brands · ${SEGMENTS.length} segments`,
+  clock:()=>'',
+};
+const READS={
+  years:()=>Y_TOTAL.toFixed(1), papers:()=>String(PAPERS.total),
+  match:()=>`${M_HEAD.passed}/${MATCH.trials}`, cars:()=>GP22.profiles.toLocaleString(), clock:()=>'Seoul time',
+};
+
+/* ═══ LAYOUT ════════════════════════════════════════════════════════════════ */
+const LABEL_BAND=34, SUB_BAND=54, TOP_BAND=78;         /* label under every dial, sub under that, nav above */
+const nameTop=()=>document.querySelector('.hero .name').getBoundingClientRect().top-hero.getBoundingClientRect().top;
+function layout(){
+  const w=W(), h=H(), out={};
+  if(w<760){
+    const gap=Math.max(10,w*0.035);
+    const big=Math.min((w-36-gap*2)/3,132), small=big*0.58;
+    ['years','match','cars'].forEach((id,i)=>{ out[id]={x:(w-(big*3+gap*2))/2+i*(big+gap), y:18, s:big, ry:0}; });
+    const sy=18+big+LABEL_BAND+18, sgap=gap*2.4;
+    ['papers','clock'].forEach((id,i)=>{ out[id]={x:(w-(small*2+sgap))/2+i*(small+sgap), y:sy, s:small, ry:0}; });
+    return DIALS.map(d=>out[d.id]);
+  }
+  /* the cluster gets the room the name block leaves, not a fixed fraction of the viewport */
+  const nt=nameTop();
+  let big=Math.min(w*0.205, Math.max(160,nt-(TOP_BAND+LABEL_BAND+SUB_BAND)), 340);
+  let mid,small,g,midOff,outOff;
+  const measure=()=>{ mid=big*0.70; small=big*0.52; g=Math.max(40,big*0.12);
+    midOff=big/2+g+mid/2; outOff=midOff+mid/2+g+small/2; return (outOff+small/2)*2; };
+  if(measure()>w-48){ big*= (w-48)/measure(); measure(); }      /* gutters are fixed, so refit rather than let dials touch */
+  const cy=Math.max(TOP_BAND+big/2, Math.min(h*0.40, nt-big/2-SUB_BAND));
+  const pos={years:[0,big,0], match:[-midOff,mid,0.05], cars:[midOff,mid,-0.05], papers:[-outOff,small,0.14], clock:[outOff,small,-0.14]};
+  for(const id in pos){ const [dx,s,t]=pos[id]; out[id]={x:w/2+dx-s/2, y:cy-s/2, s, ry:t*90}; }
+  return DIALS.map(d=>out[d.id]);
+}
+
+/* ═══ THE FIVE INSTRUMENTS ══════════════════════════════════════════════════
+   Each reads a different kind of quantity, so each is a different mechanism:
+   years = a timeline that grows; papers = a register that steps; match = a gauge
+   that fills and lights; profiles = a block ring that fills; clock = a clock.  */
+
+const C=100;                                        /* all dials drawn in a 200×200 box */
+const pol=(deg,r)=>[C+Math.cos(deg*RAD)*r, C-Math.sin(deg*RAD)*r];
+const arcD=(a0,a1,r)=>{const [x0,y0]=pol(a0,r),[x1,y1]=pol(a1,r);return `M${x0} ${y0}A${r} ${r} 0 ${Math.abs(a0-a1)>180?1:0} ${a1<a0?1:0} ${x1} ${y1}`;};
+const SWEEP={a0:225,deg:270};                        /* gauges run 225° → −45°, clockwise */
+const atFrac=f=>SWEEP.a0-SWEEP.deg*f;
+
+let UID=0;
+function chrome(s,R,opts={}){
+  const u=++UID, defs=el('defs',{});
+  defs.innerHTML=`<radialGradient id="lit${u}" cx="50%" cy="44%" r="66%">
+    <stop offset="0" stop-color="#2B2019" stop-opacity=".72"/>
+    <stop offset=".55" stop-color="#171210" stop-opacity=".5"/>
+    <stop offset="1" stop-color="#0D0908" stop-opacity="0"/></radialGradient>`;
+  s.appendChild(defs);
+  const bl=el('circle',{class:'backlight',cx:C,cy:C,r:R-1,fill:`url(#lit${u})`});
+  bl.style.opacity=0; s.appendChild(bl);                        /* comes up with ignition, stays up */
+  s.appendChild(el('circle',{class:'focusring',cx:C,cy:C,r:R+7,fill:'none',stroke:'transparent','stroke-width':1}));
+  const ring=el('circle',{class:'ring',cx:C,cy:C,r:R,fill:'none',stroke:'#F1ECE8','stroke-width':1,'stroke-opacity':.9});
+  const circ=2*Math.PI*R; ring.dataset.circ=circ;                /* the face strikes on by drawing itself from 12 o'clock */
+  ring.style.strokeDasharray=circ; ring.style.strokeDashoffset=circ;
+  ring.style.transformOrigin=C+'px '+C+'px'; ring.style.transform='rotate(-90deg)';
+  s.appendChild(ring);
+  const lamp=el('circle',{class:'lamp',cx:C,cy:C,r:R,fill:'none',stroke:'#FF3B2F','stroke-width':2.4});
+  lamp.style.opacity=0; s.appendChild(lamp);                     /* the lamp test: every warning light on, then off */
+  if(opts.inner!==false) s.appendChild(el('circle',{cx:C,cy:C,r:R-10,fill:'none',stroke:'#3A3936','stroke-width':1,'stroke-dasharray':'2 4'}));
+}
+const cap=s=>s.appendChild(el('circle',{cx:C,cy:C,r:3,fill:'#F1ECE8'}));
+function needle(s,len,{w=1.6,col='#FF3B2F',cls='needle',tail=0}={}){
+  const n=el('line',{class:cls,x1:C,y1:C+tail,x2:C,y2:C-len,stroke:col,'stroke-width':w,'stroke-linecap':'round'});
+  n.style.transformOrigin=C+'px '+C+'px'; n.style.transform='rotate(-135deg)'; s.appendChild(n); return n;
+}
+
+/* — YEARS: the ring is the career. Arc = four phases in real dates, gaps left dark.
+     Inner ticks = one per year; longer at the decade. Needle = today.           */
+function buildYears(s,R){
+  chrome(s,R,{inner:false});
+  const frac=y=>(y-SPAN.from)/(SPAN.to-SPAN.from);
+  s.appendChild(el('path',{d:arcD(SWEEP.a0,atFrac(1),R-4),fill:'none',stroke:'#2A2926','stroke-width':2.5}));
+  PHASES.forEach((p,i)=>{
+    const a0=atFrac(frac(p.from)), a1=atFrac(frac(Math.min(p.to,SPAN.to)));
+    const path=el('path',{class:'arc',d:arcD(a0,a1,R-4),fill:'none',stroke:p.col,'stroke-width':2.5,'stroke-linecap':'butt'});
+    const L=Math.abs(a0-a1)*RAD*(R-4);
+    path.style.strokeDasharray=L; path.style.strokeDashoffset=L;
+    path.style.color=p.col; path.dataset.len=L; path.dataset.start=frac(p.from).toFixed(4); path.dataset.span=(frac(p.to)-frac(p.from)).toFixed(4);
+    s.appendChild(path);
+  });
+  const g=el('g',{class:'yearticks'});
+  for(let y=Math.ceil(SPAN.from);y<=Math.floor(SPAN.to);y++){
+    const a=atFrac(frac(y)), decade=y%10===0, five=y%5===0;
+    const r1=R-13, r0=r1-(decade?13:five?9:5);
+    const t=el('line',{x1:pol(a,r0)[0],y1:pol(a,r0)[1],x2:pol(a,r1)[0],y2:pol(a,r1)[1],stroke:'#F1ECE8','stroke-opacity':decade?.85:five?.6:.35,'stroke-width':decade?1.4:1});
+    t.classList.add('tick'); g.appendChild(t);
+    if(decade){ const [lx,ly]=pol(a,r0-11); const tx=el('text',{x:lx,y:ly+3,'text-anchor':'middle',fill:'#9A8F88','font-size':9,'font-family':'IBM Plex Mono,monospace'}); tx.textContent=y; tx.classList.add('tick','micro'); g.appendChild(tx); }
+  }
+  s.appendChild(g);
+  [[SWEEP.a0,String(Math.floor(SPAN.from))],[atFrac(1),'now']].forEach(([a,txt])=>{
+    const [x,y]=pol(a,R+13); const t=el('text',{x,y:y+4,'text-anchor':'middle',fill:'#3F3E3A','font-size':9,'font-family':'IBM Plex Mono,monospace'});
+    t.textContent=txt; t.classList.add('tick','micro'); s.appendChild(t); });
+  needle(s,R-30,{w:1.4,col:'#F1ECE8',tail:9}); cap(s);
+}
+
+/* — PAPERS: not a gauge. A register: twelve marks on a closed ring, lit one at a
+     time, the first-author one drawn heavier and in flame.                      */
+function buildPapers(s,R){
+  chrome(s,R,{inner:false});
+  s.appendChild(el('circle',{cx:C,cy:C,r:R-26,fill:'none',stroke:'#3A3936','stroke-width':1}));
+  const g=el('g',{class:'papers'});
+  for(let i=0;i<PAPERS.total;i++){
+    const a=90-360*i/PAPERS.total, first=i===PAPERS.firstAuthorAt%PAPERS.total;
+    const r1=R-8, r0=R-(first?30:22);
+    const m=el('line',{class:'paper'+(first?' first':''),x1:pol(a,r0)[0],y1:pol(a,r0)[1],x2:pol(a,r1)[0],y2:pol(a,r1)[1],
+      stroke:'#F1ECE8','stroke-opacity':first?1:.3,'stroke-width':first?2.4:1.3,'stroke-linecap':'butt'});
+    m.style.opacity=0; g.appendChild(m);
+    if(first){ const [dx,dy]=pol(a,R-34); const sq=el('rect',{class:'paper first',x:dx-2.5,y:dy-2.5,width:5,height:5,fill:'#F1ECE8'}); sq.style.opacity=0; g.appendChild(sq); }
+  }
+  s.appendChild(g); cap(s);
+}
+
+/* — MATCH: a speedometer that fills and lights as it rises. The two other modes
+     stay in the same dial as ghost needles, so one instrument tells all three.  */
+function buildMatch(s,R,uid){
+  chrome(s,R);
+  const defs=el('defs',{}); defs.innerHTML=
+    `<linearGradient id="mg${uid}" gradientUnits="userSpaceOnUse" x1="14" y1="170" x2="186" y2="170">
+       <stop offset="0" stop-color="#9A8F88"/><stop offset=".55" stop-color="#FFB08A"/><stop offset="1" stop-color="#FF3B2F"/></linearGradient>`;
+  s.appendChild(defs);
+  const g=el('g',{class:'ticks'});
+  for(let k=0;k<=20;k++){ const a=atFrac(k/20), major=k%5===0, r1=R-2, r0=R-(major?12:6);
+    const t=el('line',{x1:pol(a,r0)[0],y1:pol(a,r0)[1],x2:pol(a,r1)[0],y2:pol(a,r1)[1],stroke:'#F1ECE8','stroke-opacity':major?.9:.4,'stroke-width':major?1.4:1});
+    t.classList.add('tick'); g.appendChild(t);
+    if(major){ const [lx,ly]=pol(a,R-24); const tx=el('text',{x:lx,y:ly+3.5,'text-anchor':'middle',fill:'#9A8F88','font-size':9,'font-family':'IBM Plex Mono,monospace'}); tx.textContent=k*5; tx.classList.add('tick','micro'); g.appendChild(tx); }}
+  s.appendChild(g);
+  const fill=el('path',{class:'fill',d:arcD(SWEEP.a0,atFrac(mpct(M_HEAD)/100),R-17),fill:'none',stroke:`url(#mg${uid})`,'stroke-width':5,'stroke-linecap':'butt'});
+  const L=SWEEP.deg*(mpct(M_HEAD)/100)*RAD*(R-17);
+  fill.style.strokeDasharray=L; fill.style.strokeDashoffset=L; fill.style.opacity=.35; fill.dataset.len=L; s.appendChild(fill);
+  M_GHOSTS.forEach(gh=>{
+    const a=atFrac(mpct(gh)/100);
+    const n=el('line',{class:'ghost',x1:C,y1:C,x2:pol(a,R-30)[0],y2:pol(a,R-30)[1],stroke:'#9A8F88','stroke-width':1,'stroke-dasharray':'3 3'});
+    n.style.opacity=0; s.appendChild(n);
+    const dot=el('circle',{class:'ghost',cx:pol(a,R-30)[0],cy:pol(a,R-30)[1],r:1.8,fill:'#9A8F88'}); dot.style.opacity=0; s.appendChild(dot);
+    const [tx0,ty0]=pol(a,R-47); const t=el('text',{class:'ghost',x:tx0,y:ty0+3,'text-anchor':'middle',fill:'#9A8F88','font-size':8.5,'font-family':'IBM Plex Mono,monospace'});
+    t.textContent=`${gh.passed}/${MATCH.trials}`; t.classList.add('micro'); t.style.opacity=0; s.appendChild(t);
+  });
+  needle(s,R-20,{w:1.8,tail:10,cls:'needle hot'}); cap(s);
+}
+
+/* — PROFILES: a block ring. Ten blocks, one per GP22 segment; a segment with two
+     body variants gets a second, inner block. Hover or focus names it.          */
+function buildCars(s,R,box){
+  chrome(s,R,{inner:false});
+  box.__segs=[];
+  const n=SEGMENTS.length, pad=1.6, step=SWEEP.deg/n, g=el('g',{});
+  SEGMENTS.forEach((sg,i)=>{
+    const a0=SWEEP.a0-i*step-pad/2, a1=a0-step+pad;
+    const wrap=el('g',{class:'seg',tabindex:-1}); wrap.dataset.i=i;
+    wrap.appendChild(el('path',{d:arcD(a0,a1,R-6),fill:'none',stroke:'transparent','stroke-width':26,'pointer-events':'stroke'}));
+    sg.cars.forEach((_,j)=>{                          /* outer block = the segment; inner = its second body variant */
+      const b=el('path',{class:'block',d:arcD(a0,a1,R-6-j*7.5),fill:'none',stroke:j?'#FFB08A':'#F1ECE8','stroke-width':5,'stroke-linecap':'butt','stroke-opacity':j?.85:.8});
+      b.dataset.rest=b.getAttribute('stroke'); b.style.opacity=0; wrap.appendChild(b);
+    });
+    const [lx,ly]=pol((a0+a1)/2,R-26);
+    const t=el('text',{class:'segcode',x:lx,y:ly+3,'text-anchor':'middle',fill:'#9A8F88','font-size':8.5,'font-family':'IBM Plex Mono,monospace'});
+    t.textContent=sg.code; t.classList.add('tick','micro'); wrap.appendChild(t);
+    const blocks=wrap.querySelectorAll('.block');
+    const show=()=>{ box.querySelector('.sub').textContent=`${sg.code} · ${sg.name} — ${sg.cars.join(', ')}`;
+      utils.set(blocks,{stroke:'#FF3B2F','stroke-opacity':1}); utils.set(t,{fill:'#F1ECE8'}); };
+    const hide=()=>{ box.querySelector('.sub').textContent=SUBS.cars();
+      blocks.forEach((b,j)=>utils.set(b,{stroke:b.dataset.rest,'stroke-opacity':j?.85:.8})); utils.set(t,{fill:'#9A8F88'}); };
+    wrap.addEventListener('pointerenter',show); wrap.addEventListener('pointerleave',hide);
+    g.appendChild(wrap);
+    box.__segs.push({show,hide,desc:`${sg.code} · ${sg.name} — ${sg.cars.join(', ')}`});
+  });
+  s.appendChild(g);
+  const wipe=el('line',{class:'wipe',x1:C,y1:C,x2:C,y2:C-(R-4),stroke:'#FFB08A','stroke-width':1});
+  wipe.style.transformOrigin=C+'px '+C+'px'; wipe.style.transform='rotate(-135deg)'; wipe.style.opacity=0; s.appendChild(wipe);
+  cap(s);
+}
+
+/* — CLOCK: the smallest, and the only one that keeps moving after you arrive. */
+function buildClock(s,R){
+  chrome(s,R);
+  const g=el('g',{});
+  for(let k=0;k<12;k++){ const a=90-30*k, major=k%3===0, r1=R-2, r0=R-(major?11:6);
+    const t=el('line',{x1:pol(a,r0)[0],y1:pol(a,r0)[1],x2:pol(a,r1)[0],y2:pol(a,r1)[1],stroke:'#F1ECE8','stroke-opacity':major?.9:.4,'stroke-width':major?1.4:1});
+    t.classList.add('tick'); g.appendChild(t); }
+  s.appendChild(g);
+  [['h',R-42,2],['m',R-18,1.4],['s',R-12,.8]].forEach(([cls,len,w])=>needle(s,len,{cls:'needle '+cls+(cls==='s'?' hot':''),w,col:cls==='s'?'#FF3B2F':'#F1ECE8'}));
+  cap(s);
+}
+
+/* ═══ ASSEMBLY ══════════════════════════════════════════════════════════════ */
+function dial(d,i,L){
+  const box=document.createElement('div'); box.className='dial'; box.dataset.id=d.id; box.tabIndex=0;
+  if(d.href) box.setAttribute('role','link'); else box.classList.add('inert');
+  const sub=SUBS[d.kind]();
+  box.setAttribute('aria-label',`${d.label}: ${READS[d.kind]()}${sub?', '+sub:''}`+
+    (d.kind==='cars'?', arrow keys step through the segments':'')+(d.href?'':', no destination yet'));
+  box.addEventListener('keydown',e=>{
+    if(d.kind==='cars'&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){    /* step the ring without putting 10 stops in the tab order */
+      e.preventDefault(); const S=box.__segs||[]; if(!S.length) return;
+      box.__seg=box.__seg==null ? (e.key==='ArrowRight'?0:S.length-1)
+                                : (box.__seg+(e.key==='ArrowRight'?1:S.length-1))%S.length;
+      S.forEach((sg,k)=>{if(k!==box.__seg) sg.hide();}); S[box.__seg].show(); return;   /* hides reset the shared sub, so they go first */
+    }
+    if(d.kind==='cars'&&e.key==='Escape'&&box.__seg!=null){ (box.__segs||[]).forEach(sg=>sg.hide()); box.__seg=null; return; }
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();dive(box,d);}
+  });
+  box.addEventListener('blur',()=>{ if(d.kind==='cars'&&box.__seg!=null){ (box.__segs||[]).forEach(sg=>sg.hide()); box.__seg=null; } });
+  const z=(W()>=760&&d.id==='years')?40:0;             /* no perspective push on phones — it inflates the centre dial */
+  box.style.cssText=`left:${L.x}px;top:${L.y}px;width:${L.s}px;height:${L.s}px;transform:rotateY(${L.ry}deg) translateZ(${z}px)`;
+  const s=el('svg',{viewBox:'0 0 200 200'}); const R=88;
+  ({years:buildYears,papers:buildPapers,match:buildMatch,cars:buildCars,clock:buildClock})[d.kind](s,R,d.kind==='cars'?box:i);
+  box.appendChild(s);
+  const val=document.createElement('div'); val.className='val'; val.textContent=d.kind==='clock'?'':(d.kind==='match'?`0/${MATCH.trials}`:'0'); box.appendChild(val);
+  const lab=document.createElement('div'); lab.className='lab'; lab.textContent=W()<760?d.short:d.label; box.appendChild(lab);
+  const sb=document.createElement('div'); sb.className='sub'; sb.textContent=sub;
+  if(d.kind==='cars') sb.setAttribute('aria-live','polite');
+  if(L.s<130) sb.style.display='none';                 /* a sub under a small dial lands under its neighbour */
+  box.appendChild(sb);
+  box.addEventListener('click',()=>dive(box,d));
+  return box;
+}
+let boxes=[];
+function build(){
+  stage.replaceChildren(); const L=layout();
+  boxes=DIALS.map((d,i)=>{const b=dial(d,i,L[i]); stage.appendChild(b); return b;});
+  buildGrid(); placeLegend(L);
+  if(W()<760){ const bottom=Math.max(...L.map(b=>b.y+b.s));
+    document.documentElement.style.setProperty('--stage-h',Math.round(bottom+LABEL_BAND)+'px'); }
+}
+function placeLegend(L){
+  const lg=document.getElementById('legend'); if(W()<760){ lg.className='legend'; lg.style.top=''; return; }
+  const centre=L[2], under=centre.y+centre.s+62;
+  const nameTop=document.querySelector('.hero .name').getBoundingClientRect().top-hero.getBoundingClientRect().top;
+  if(under+18<nameTop-14){ lg.className='legend'; lg.style.top=Math.round(under)+'px'; }
+  else { lg.className='legend side'; lg.style.top=Math.round(Math.max(120,H()-160-PHASES.length*18))+'px'; }
+}
+function buildGrid(){
+  grid.replaceChildren(); const w=W(), h=grid.clientHeight||H(); grid.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  const step=Math.max(56,Math.round(w/22));
+  for(let x=step;x<w;x+=step) for(let y=step;y<h;y+=step){ const c=el('path',{d:`M${x-4} ${y} H${x+4} M${x} ${y-4} V${y+4}`,stroke:'#3A3936','stroke-width':1,fill:'none',opacity:0}); c.classList.add('x'); grid.appendChild(c); }
+}
+
+function showAll(){                                   /* the complete, settled face — no animation in flight */
+  boxes.forEach(b=>b.style.opacity=1);
+  document.querySelectorAll('.grid .x').forEach(x=>x.style.opacity=1);
+  document.querySelectorAll('.ring').forEach(r=>r.style.strokeDashoffset=0);
+  document.querySelectorAll('.lamp').forEach(l=>l.style.opacity=0);
+  document.querySelectorAll('.backlight,.tick,.dial .val,.dial .lab,.dial .sub,.paper,.block,.ghost').forEach(n=>n.style.opacity=1);
+  document.querySelectorAll('.arc').forEach(a=>a.style.strokeDashoffset=0);
+  document.querySelectorAll('.fill').forEach(f=>{f.style.strokeDashoffset=0;f.style.opacity=1;});
+}
+
+/* ═══ IGNITION — the cluster boots the way a car's does ═════════════════════
+   power → faces strike on → lamp test → needles sweep full scale and return →
+   only then do the real numbers come up. The self-test is the argument: the
+   instrument proves it works before it asks you to believe a reading.        */
+const IGN={faces:220, ticks:640, lamp:920, sweep:1120, sweepDur:840, settle:2150};   /* lamp peaks as the last face completes; sweep runs after */
+
+function selfTest(){
+  const g=id=>boxes.find(b=>b.dataset.id===id);
+  const tri=t=>{ const u=t<.55? t/.55 : 1-(t-.55)/.45;            /* out to full scale, back to rest */
+    return u<.5 ? 2*u*u : 1-Math.pow(-2*u+2,2)/2; };
+  const drive=(fn,delay=0)=>{ const o={t:0};
+    animate(o,{t:1,duration:IGN.sweepDur,ease:'linear',delay,onUpdate:()=>fn(tri(o.t))}); };
+
+  const yn=g('years').querySelector('.needle');
+  drive(e=>{ yn.style.transform=`rotate(${-135+270*e}deg)`; });
+
+  const mt=g('match'), mn=mt.querySelector('.needle'), fill=mt.querySelector('.fill'), flen=+fill.dataset.len;
+  drive(e=>{ mn.style.transform=`rotate(${-135+270*e}deg)`;
+    fill.style.strokeDashoffset=flen*(1-e); fill.style.opacity=(.2+.8*e).toFixed(3); },60);
+
+  const cr=g('cars'), wipe=cr.querySelector('.wipe'), blocks=[...cr.querySelectorAll('.block')];
+  drive(e=>{ wipe.style.opacity=(e*1.1).toFixed(3); wipe.style.transform=`rotate(${-135+270*e}deg)`;
+    blocks.forEach(b=>b.style.opacity=e.toFixed(3)); },40);
+
+  const marks=[...g('papers').querySelectorAll('.paper')];
+  drive(e=>{ marks.forEach(m=>m.style.opacity=e.toFixed(3)); },100);
+
+  const ck=g('clock'), o={t:0};                                   /* hands spin their own test, fast to slow */
+  animate(o,{t:1,duration:IGN.sweepDur+220,ease:'inOut(2)',onUpdate:()=>{
+    [['h',1],['m',4],['s',12]].forEach(([c,k])=>{ ck.querySelector('.needle.'+c).style.transform=`rotate(${o.t*360*k}deg)`; }); }});
+}
+
+/* ═══ SEQUENCE ══════════════════════════════════════════════════════════════ */
+function play(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+    showAll();
+    document.querySelectorAll('.legend,.legend i').forEach(n=>n.style.opacity=1);
+    document.querySelectorAll('.name h1 span,.name .kr,.name .lede,.readout').forEach(e=>{e.style.opacity=1;e.style.transform='none';});
+    settle(true); return;
+  }
+  boxes.forEach(b=>b.style.opacity=0);
+  document.querySelectorAll('.dial .val').forEach(v=>v.style.opacity=0);
+  const tl=createTimeline({defaults:{ease:'outExpo'}});
+  tl.add('.grid .x',{opacity:[0,.5],duration:110,ease:'linear',delay:stagger(3,{grid:[22,12],from:'center'})},0)
+    .add('.grid .x',{opacity:[.5,.1],duration:90,ease:'linear'},150)     /* contact, droop, hold */
+    .add('.grid .x',{opacity:[.1,1],duration:420},250)
+    .add(boxes,{opacity:[0,1],duration:160,ease:'linear',delay:stagger(70,{from:'center'})},IGN.faces)
+    .add('.ring',{strokeDashoffset:[e=>+e.dataset.circ,0],duration:640,ease:'inOut(2)',delay:stagger(70,{from:'center'})},IGN.faces)
+    .add('.backlight',{opacity:[0,1],duration:820,delay:stagger(70,{from:'center'})},IGN.faces+80)
+    .add('.tick',{opacity:[0,1],duration:280,delay:stagger(2)},IGN.ticks)
+    .add('.dial .lab',{opacity:[0,1],duration:420},IGN.ticks)
+    .add('.dial .sub',{opacity:[0,1],duration:420},IGN.ticks+140)
+    .add('.lamp',{opacity:[0,.85],duration:110,ease:'linear'},IGN.lamp)
+    .add('.lamp',{opacity:[.85,0],duration:340,ease:'linear'},IGN.lamp+130)
+    .add('.dial .val',{opacity:[0,1],duration:380},IGN.settle)
+    .add('.name h1 span',{opacity:[0,1],translateY:['60%','0%'],duration:640,delay:stagger(26)},IGN.settle+120)
+    .add('.name .kr',{opacity:[0,1],duration:480},IGN.settle+460)
+    .add('.name .lede',{opacity:[0,1],translateY:[10,0],duration:560},IGN.settle+590)
+    .add('.legend',{opacity:[0,1],duration:420},IGN.settle+720)
+    .add('.legend i',{opacity:[0,1],scaleX:[0,1],duration:460,delay:stagger(70)},IGN.settle+780)
+    .add('#readout',{opacity:[0,1],duration:480},IGN.settle+900);
+  setTimeout(selfTest,IGN.sweep);
+  setTimeout(()=>settle(false),IGN.settle);
+}
+
+/* each instrument settles in its own way — that is the point of building five */
+function settle(instant){
+  const get=id=>boxes.find(b=>b.dataset.id===id);
+  const yrs=get('years'), val=yrs.querySelector('.val'), nd=yrs.querySelector('.needle');
+  const DUR=1700;
+  if(instant){ val.textContent=Y_TOTAL.toFixed(1); nd.style.transform=`rotate(${-135+270}deg)`; }
+  else{
+    const o={t:0}; animate(o,{t:1,duration:DUR,ease:'inOut(2.2)',onUpdate:()=>{
+      nd.style.transform=`rotate(${-135+270*o.t}deg)`; val.textContent=(Y_TOTAL*o.t).toFixed(1); }});
+    yrs.querySelectorAll('.arc').forEach(a=>{                       /* phases uncover under the needle, in real time order */
+      const len=+a.dataset.len, st=+a.dataset.start, sp=+a.dataset.span;
+      animate(a,{strokeDashoffset:[len,0],duration:Math.max(220,DUR*sp),delay:DUR*st,ease:'linear'});
+    });
+  }
+  const pp=get('papers'), pv=pp.querySelector('.val'), marks=[...pp.querySelectorAll('.paper')];
+  if(instant){ marks.forEach(m=>m.style.opacity=1); pv.textContent=PAPERS.total; }
+  else{ animate(marks,{opacity:[0,1],duration:120,delay:stagger(95),ease:'linear',
+      onBegin:()=>{ let n=0; const id=setInterval(()=>{ pv.textContent=++n; if(n>=PAPERS.total) clearInterval(id); },95); }}); }
+
+  const mt=get('match'), mv=mt.querySelector('.val'), mn=mt.querySelector('.needle'), fill=mt.querySelector('.fill');
+  const mdeg=p=>-135+270*(p/100);
+  if(instant){ mn.style.transform=`rotate(${mdeg(mpct(M_HEAD))}deg)`; mv.textContent=`${M_HEAD.passed}/${MATCH.trials}`; fill.style.strokeDashoffset=0; fill.style.opacity=1; }
+  else{
+    const o={v:0}; animate(o,{v:M_HEAD.passed,duration:1900,ease:'spring(1, 82, 14, 0)',onUpdate:()=>{
+      mn.style.transform=`rotate(${mdeg(o.v/MATCH.trials*100)}deg)`; mv.textContent=`${Math.round(o.v)}/${MATCH.trials}`; }});
+    animate(fill,{strokeDashoffset:[+fill.dataset.len,0],opacity:[.3,1],duration:1500,ease:'out(3)'});
+    animate(mt.querySelectorAll('.ghost'),{opacity:[0,.85],duration:500,delay:1300});
+  }
+  const cr=get('cars'), cv=cr.querySelector('.val'), blocks=[...cr.querySelectorAll('.block')];
+  if(instant){ blocks.forEach(b=>b.style.opacity=1); cv.textContent=GP22.profiles.toLocaleString(); }
+  else{
+    animate(blocks,{opacity:[0,1],duration:220,delay:stagger(58),ease:'linear'});
+    const o={n:0}; animate(o,{n:GP22.profiles,duration:1500,ease:'out(3)',
+      onUpdate:()=>{ cv.textContent=Math.round(o.n).toLocaleString(); }});
+  }
+  clock();
+}
+function clock(){ const b=boxes.find(x=>x.dataset.id==='clock'); if(!b) return;
+  const tick=()=>{ const t=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'})); const s=t.getSeconds(), m=t.getMinutes()+s/60, hh=(t.getHours()%12)+m/60;
+    b.querySelector('.needle.h').style.transform=`rotate(${hh*30}deg)`;
+    b.querySelector('.needle.m').style.transform=`rotate(${m*6}deg)`;
+    b.querySelector('.needle.s').style.transform=`rotate(${s*6}deg)`; };
+  tick(); clearInterval(window.__clk); window.__clk=setInterval(tick,1000); }
+
+/* pointer lean — desktop only */
+let px=0,py=0,tx=0,ty=0;
+addEventListener('pointermove',e=>{tx=(e.clientX/W()-.5);ty=(e.clientY/H()-.5);},{passive:true});
+(function loop(){ if(W()>=760){ px+=(tx-px)*.06; py+=(ty-py)*.06;
+    stage.style.transform=`rotateY(${px*10}deg) rotateX(${-py*6}deg)`; hero.style.perspectiveOrigin=`${50-px*8}% ${45-py*6}%`; }
+  requestAnimationFrame(loop); })();
+
+/* dive — TODO: targets are placeholder hashes until the real sections exist in index.html */
+let diving=false;
+const go=h=>{ if(!h) return; if(h.charAt(0)==='#') location.hash=h; else location.href=h; };
+function dive(box,d){ if(diving||!d.href) return; diving=true; const others=boxes.filter(b=>b!==box); box.dataset.base=box.style.transform;
+  const tl=createTimeline({defaults:{ease:'inOut(3)'}, onComplete:()=>{ go(d.href); diving=false; box.style.transform=box.dataset.base;
+    animate(others,{opacity:1,duration:400}); animate(box,{opacity:1,duration:400}); animate('.name, .readout, .grid',{opacity:1,duration:400}); }});
+  tl.add(others,{opacity:0,translateZ:-80,duration:400,delay:stagger(36)},0)
+    .add(box,{translateZ:[0,520],rotateY:0,opacity:[1,0],duration:600},110)
+    .add('.name, .readout, .grid',{opacity:0,duration:300},110);
+}
+
+document.getElementById('readout').innerHTML=`<b>now</b> · the check, as a library<br><b>next</b> · lives, not rows<br>gyunpyolee.com · Seoul`;
+document.getElementById('legend').innerHTML=PHASES.map(p=>`<span><i style="background:${p.col}"></i>${p.place} <em>${Math.floor(p.from)}–${p.id==='seoul'?'now':Math.floor(p.to)}</em></span>`).join('');
+
+document.getElementById('h1').innerHTML='Gyunpyo Lee'.split('').map(ch=>`<span>${ch===' '?'&nbsp;':ch}</span>`).join('');
+build(); play();
+let rz; addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{build();showAll();settle(true);},150);});
+
+})();</script>
 </body>
 </html>

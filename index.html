@@ -113,6 +113,8 @@ footer{margin-top:56px;padding:22px 0 0;border-top:1px solid var(--rule);font-si
 .hero .legend em{font-style:normal;color:var(--ghost)}
 .hero .readout{position:absolute;right:clamp(18px,4vw,48px);bottom:clamp(28px,6vh,64px);font:12px/1.7 "IBM Plex Mono",monospace;color:var(--dim);text-align:right;z-index:3;opacity:0}
 .hero .readout b{color:var(--ink);font-weight:500}
+.hero .readout a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.hero .readout a:hover,.hero .readout a:focus-visible{color:var(--acc);border-bottom-color:var(--acc)}
 @media (max-width:760px){
 .hero{height:auto;min-height:0;max-height:none;padding-bottom:24px;display:flex;flex-direction:column}
 .hero .top{order:1}
@@ -619,7 +621,8 @@ function selfTest(){
 
 /* ═══ SEQUENCE ══════════════════════════════════════════════════════════════ */
 function play(){
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+  let booted=false; try{ booted=sessionStorage.getItem('cluster-booted')==='1'; }catch(e){}
+  if(booted||matchMedia('(prefers-reduced-motion: reduce)').matches){
     showAll();
     document.querySelectorAll('.legend,.legend i').forEach(n=>n.style.opacity=1);
     document.querySelectorAll('.name h1 span,.name .kr,.name .lede,.readout').forEach(e=>{e.style.opacity=1;e.style.transform='none';});
@@ -648,6 +651,7 @@ function play(){
     .add('#readout',{opacity:[0,1],duration:480},IGN.settle+900);
   setTimeout(selfTest,IGN.sweep);
   setTimeout(()=>settle(false),IGN.settle);
+  try{ sessionStorage.setItem('cluster-booted','1'); }catch(e){}
 }
 
 /* each instrument settles in its own way — that is the point of building five */
@@ -712,7 +716,25 @@ function dive(box,d){ if(diving||!d.href) return; diving=true; const others=boxe
     .add('.name, .readout, .grid',{opacity:0,duration:300},110);
 }
 
-document.getElementById('readout').innerHTML=`<b>now</b> · the check, as a library<br><b>next</b> · lives, not rows<br>gyunpyolee.com · Seoul`;
+/* Back-navigation restores this page from bfcache with the dive's end state frozen
+   in: dials at opacity 0, pushed forward in Z, diving still true. Nothing re-runs,
+   so rebuild straight to the settled reading — the ignition should not replay. */
+addEventListener('pageshow',e=>{
+  if(!e.persisted) return;
+  diving=false;
+  build(); showAll(); settle(true);
+  document.querySelectorAll('.hero .name, .hero .readout, .hero .legend, .hero .legend i')
+    .forEach(n=>{ n.style.opacity=1; n.style.transform='none'; });
+  document.querySelectorAll('.hero .name h1 span')
+    .forEach(n=>{ n.style.opacity=1; n.style.transform='none'; });
+});
+
+/* the readout used to restate #next, which went stale the moment something shipped.
+   Contact is stable and belongs one tap from the top. */
+document.getElementById('readout').innerHTML=
+  `<a href="https://github.com/glee2dev">GitHub</a> · <a href="/gplee-resume/">Résumé</a> · `+
+  `<a href="https://www.linkedin.com/in/gple2/">LinkedIn</a><br>`+
+  `<a href="mailto:gyunpyolee@gmail.com">gyunpyolee@gmail.com</a><br>gyunpyolee.com · Seoul`;
 document.getElementById('legend').innerHTML=PHASES.map(p=>`<span><i style="background:${p.col}"></i>${p.place} <em>${Math.floor(p.from)}–${p.id==='seoul'?'now':Math.floor(p.to)}</em></span>`).join('');
 
 document.getElementById('h1').innerHTML='Gyunpyo Lee'.split('').map(ch=>`<span>${ch===' '?'&nbsp;':ch}</span>`).join('');
